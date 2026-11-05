@@ -83,6 +83,20 @@ query defaults live in `src/api/client.ts` and `src/api/queryClient.ts`. The app
 already mounts a shared `QueryClientProvider`. Existing mock flows remain intact
 until the backend contract is available.
 
+## Public pages
+
+- `/opportunities` shows demo opportunities with keyword, location and employment
+  filters, in-page saved cards, and an empty-state reset. Saved cards reset when
+  leaving or reloading the page.
+- `/how-it-works` explains the professional and practice journeys with separate
+  steps and signup links.
+
+Both pages share the existing navigation and support English, Dutch and Spanish.
+Reusable UI lives in `src/components/opportunities/OpportunityCard.tsx` and
+`src/components/how-it-works/HowItWorksSteps.tsx`. Demo data and translated page
+copy live alongside the components. Listings are not connected to a live API;
+joining currently opens the existing mock signup flow.
+
 ## Code quality
 
 This project uses [Oxlint](https://oxc.rs/docs/guide/usage/linter) for fast linting and [Oxfmt](https://oxc.rs/docs/guide/usage/formatter) for formatting.

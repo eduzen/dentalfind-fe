@@ -1,0 +1,198 @@
+.public-page {
+  padding-top: 72px;
+  padding-bottom: 80px;
+  min-height: 70vh;
+}
+.public-page-heading {
+  max-width: 740px;
+  margin-bottom: 40px;
+}
+.public-page-heading h1 {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(2.3rem, 5vw, 4rem);
+  line-height: 1.12;
+  letter-spacing: -0.05em;
+  margin: 20px 0;
+  font-weight: 700;
+}
+.public-page-heading p,
+.how-step p,
+.how-cta p {
+  color: #62706b;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+.opportunity-filters {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid #e4e8e2;
+  border-radius: 18px;
+  background: white;
+}
+.opportunity-filters label > span {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.public-input,
+.opportunity-filters select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fbfaf7;
+  border: 1px solid #dce3dd;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+  min-height: 48px;
+  font: inherit;
+  color: inherit;
+}
+.public-input input {
+  background: transparent;
+  border: 0;
+  width: 100%;
+  min-width: 0;
+}
+.public-input:focus-within {
+  outline: 2px solid #286b51;
+  outline-offset: 2px;
+}
+.public-input input:focus {
+  outline: none;
+}
+.public-page :is(button, a, select):focus-visible {
+  outline: 2px solid #286b51;
+  outline-offset: 4px;
+}
+.opportunity-results-bar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 24px 0 12px;
+  font-size: 0.9rem;
+}
+.opportunity-results-bar > p {
+  margin-right: auto;
+}
+.opportunity-results-bar button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.saved-filter {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+.saved-filter input {
+  accent-color: #19332f;
+}
+.demo-note {
+  color: #62706b;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 20px 0;
+}
+.public-page .opportunity-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 16px 0 6px;
+}
+.public-page .empty-state {
+  grid-column: 1 / -1;
+  padding: 48px 24px;
+}
+.public-page .empty-state .button {
+  margin-top: 20px;
+}
+.how-audience {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.how-steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0;
+  gap: 24px;
+}
+.how-step {
+  background: white;
+  border: 1px solid #e4e8e2;
+  border-radius: 20px;
+  padding: 32px;
+}
+.how-step-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+.how-step-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  background: #e4f0e8;
+  border-radius: 16px;
+}
+.how-step:nth-child(2) .how-step-icon {
+  background: #fce8db;
+}
+.how-step:nth-child(3) .how-step-icon {
+  background: #ebe6f5;
+}
+.how-step-number {
+  font-size: 1.8rem;
+  color: #62706b;
+}
+.how-step h2,
+.how-cta h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.how-step p {
+  margin-top: 16px;
+}
+.how-cta {
+  padding: 36px;
+  margin-top: 48px;
+  background: #e4f0e8;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.nav-links a[aria-current='page'] {
+  color: #286b51;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+@media (max-width: 800px) {
+  .opportunity-filters,
+  .how-steps {
+    grid-template-columns: 1fr;
+  }
+  .public-page {
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+  .how-step,
+  .how-cta {
+    padding: 24px;
+  }
+  .how-step-top {
+    margin-bottom: 20px;
+  }
+}

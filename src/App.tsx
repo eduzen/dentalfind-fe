@@ -20,6 +20,8 @@ import {
 import './App.css'
 import SignupPage from './components/signup/SignupPage'
 import LoginPage from './components/login/LoginPage'
+import OpportunitiesPage from './components/opportunities/OpportunitiesPage'
+import HowItWorksPage from './components/how-it-works/HowItWorksPage'
 import { useBrowserPath } from './hooks/useBrowserPath'
 
 const opportunities = [
@@ -196,9 +198,19 @@ function App(): ReactElement {
   }, [navigate, pathname])
 
   function navigateToSignup(event: MouseEvent<HTMLAnchorElement>) {
-    event.preventDefault()
-    navigate('/sign-up')
+    navigateToPage(event)
   }
+
+  function navigateToPage(event: MouseEvent<HTMLAnchorElement>) {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+      return
+    event.preventDefault()
+    setMenuOpen(false)
+    navigate(event.currentTarget.pathname)
+  }
+
+  const isOpportunitiesPage = pathname === '/opportunities'
+  const isHowItWorksPage = pathname === '/how-it-works'
 
   if (pathname === '/login' || pathname === '/inloggen') {
     return <LoginPage language={language} onLanguageChange={setLanguage} navigate={navigate} />
@@ -224,16 +236,30 @@ function App(): ReactElement {
     <main>
       <header className="nav-wrap">
         <nav className="nav container">
-          <a className="brand" href="#top" aria-label="Dentalfind home">
+          <a className="brand" href="/" onClick={navigateToPage} aria-label="Dentalfind home">
             <span className="brand-mark">
               <span />
             </span>
             dentalfind<span className="brand-dot">.</span>
           </a>
           <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-            <a href="#kansen">{t.jobs}</a>
-            <a href="#hoe-werkt-het">{t.how}</a>
-            <a href="#over-ons">{t.practices}</a>
+            <a
+              href="/opportunities"
+              onClick={navigateToPage}
+              aria-current={isOpportunitiesPage ? 'page' : undefined}
+            >
+              {t.jobs}
+            </a>
+            <a
+              href="/how-it-works"
+              onClick={navigateToPage}
+              aria-current={isHowItWorksPage ? 'page' : undefined}
+            >
+              {t.how}
+            </a>
+            <a href="/sign-up/practice" onClick={navigateToPage}>
+              {t.practices}
+            </a>
           </div>
           <div className="nav-actions">
             <select
@@ -255,6 +281,7 @@ function App(): ReactElement {
             <button
               className="menu-toggle"
               aria-label="Menu"
+              aria-expanded={menuOpen}
               onClick={() => setMenuOpen(!menuOpen)}
             >
               {menuOpen ? <X /> : <Menu />}
@@ -263,236 +290,253 @@ function App(): ReactElement {
         </nav>
       </header>
 
-      <section className="hero container" id="top">
-        <div className="hero-copy">
-          <div className="eyebrow">
-            <span className="pulse" /> {t.eyebrow}
-          </div>
-          <h1>
-            {t.headline1}
-            <br />
-            <em>{t.headline2}</em>
-            <br />
-            {t.headline3}
-          </h1>
-          <p className="hero-lede">{t.lead}</p>
-          <div className="hero-ctas">
-            <a href="#kansen" className="button button-dark">
-              {t.work} <ArrowRight size={17} />
-            </a>
-            <a href="/sign-up" onClick={navigateToSignup} className="button button-light">
-              {t.staff} <ArrowUpRight size={17} />
-            </a>
-          </div>
-          <div className="social-proof">
-            <div className="avatar-stack">
-              <span>J</span>
-              <span>M</span>
-              <span>S</span>
-              <span>+</span>
+      {isOpportunitiesPage ? (
+        <OpportunitiesPage language={language} navigate={navigate} />
+      ) : isHowItWorksPage ? (
+        <HowItWorksPage language={language} navigate={navigate} />
+      ) : (
+        <>
+          <section className="hero container" id="top">
+            <div className="hero-copy">
+              <div className="eyebrow">
+                <span className="pulse" /> {t.eyebrow}
+              </div>
+              <h1>
+                {t.headline1}
+                <br />
+                <em>{t.headline2}</em>
+                <br />
+                {t.headline3}
+              </h1>
+              <p className="hero-lede">{t.lead}</p>
+              <div className="hero-ctas">
+                <a href="/opportunities" onClick={navigateToPage} className="button button-dark">
+                  {t.work} <ArrowRight size={17} />
+                </a>
+                <a href="/sign-up" onClick={navigateToSignup} className="button button-light">
+                  {t.staff} <ArrowUpRight size={17} />
+                </a>
+              </div>
+              <div className="social-proof">
+                <div className="avatar-stack">
+                  <span>J</span>
+                  <span>M</span>
+                  <span>S</span>
+                  <span>+</span>
+                </div>
+                <div>
+                  <strong>1.200+ mondzorgprofessionals</strong>
+                  <small>vinden hun plek via Dentalfind</small>
+                </div>
+                <div className="proof-stars">★★★★★</div>
+              </div>
             </div>
-            <div>
-              <strong>1.200+ mondzorgprofessionals</strong>
-              <small>vinden hun plek via Dentalfind</small>
+            <div className="hero-visual">
+              <div className="hero-photo">
+                <img
+                  src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=1100&q=85"
+                  alt="Tandarts en patiënt in een moderne praktijk"
+                />
+                <div className="photo-label">
+                  <span className="label-icon">
+                    <Sparkles size={15} />
+                  </span>
+                  <span>
+                    <b>Werk met een glimlach</b>
+                    <small>Jouw volgende stap begint hier</small>
+                  </span>
+                </div>
+              </div>
+              <div className="floating-card availability">
+                <span className="available-icon">
+                  <Check size={15} />
+                </span>
+                <span>
+                  <b>Nieuwe kansen</b>
+                  <small>Elke dag vers aanbod</small>
+                </span>
+                <ArrowUpRight size={17} />
+              </div>
+              <div className="floating-card match">
+                <div className="match-icon">
+                  <Heart size={16} fill="currentColor" />
+                </div>
+                <div>
+                  <b>Een match die klopt</b>
+                  <small>Voor jou én de praktijk</small>
+                </div>
+              </div>
+              <div className="hero-scribble">✳</div>
             </div>
-            <div className="proof-stars">★★★★★</div>
-          </div>
-        </div>
-        <div className="hero-visual">
-          <div className="hero-photo">
-            <img
-              src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=1100&q=85"
-              alt="Tandarts en patiënt in een moderne praktijk"
-            />
-            <div className="photo-label">
-              <span className="label-icon">
-                <Sparkles size={15} />
-              </span>
-              <span>
-                <b>Werk met een glimlach</b>
-                <small>Jouw volgende stap begint hier</small>
-              </span>
-            </div>
-          </div>
-          <div className="floating-card availability">
-            <span className="available-icon">
-              <Check size={15} />
-            </span>
-            <span>
-              <b>Nieuwe kansen</b>
-              <small>Elke dag vers aanbod</small>
-            </span>
-            <ArrowUpRight size={17} />
-          </div>
-          <div className="floating-card match">
-            <div className="match-icon">
-              <Heart size={16} fill="currentColor" />
-            </div>
-            <div>
-              <b>Een match die klopt</b>
-              <small>Voor jou én de praktijk</small>
-            </div>
-          </div>
-          <div className="hero-scribble">✳</div>
-        </div>
-      </section>
+          </section>
 
-      <section className="search-section container" id="kansen">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">{t.next}</span>
-            <h2>{t.good}</h2>
-          </div>
-          <a className="text-link" href="#kansen">
-            {t.all} <ArrowRight size={16} />
-          </a>
-        </div>
-        <div className="marketplace">
-          <div className="market-top">
-            <div className="tabs">
-              <button className={mode === 'werk' ? 'active' : ''} onClick={() => setMode('werk')}>
-                <BriefcaseBusiness size={16} /> Ik zoek werk
-              </button>
-              <button
-                className={mode === 'personeel' ? 'active' : ''}
-                onClick={() => setMode('personeel')}
-              >
-                <UsersRound size={16} /> Ik zoek personeel
-              </button>
+          <section className="search-section container" id="kansen">
+            <div className="section-heading">
+              <div>
+                <span className="eyebrow">{t.next}</span>
+                <h2>{t.good}</h2>
+              </div>
+              <a className="text-link" href="/opportunities" onClick={navigateToPage}>
+                {t.all} <ArrowRight size={16} />
+              </a>
             </div>
-            <span className="market-note">
-              <span className="green-dot" />{' '}
-              {mode === 'werk' ? '38 actuele kansen' : '124 professionals beschikbaar'}
-            </span>
-          </div>
-          <div className="search-bar">
-            <label className="search-field">
-              <Search size={19} />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={
-                  mode === 'werk'
-                    ? 'Functie, praktijk of trefwoord'
-                    : 'Zoek op functie of specialisme'
-                }
-              />
-            </label>
-            <span className="search-divider" />
-            <label className="location-field">
-              <MapPin size={18} />
-              <input
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                aria-label="Locatie"
-              />
-              <ChevronDown size={16} />
-            </label>
-            <button
-              className="button button-dark search-button"
-              onClick={() =>
-                document
-                  .getElementById('results')
-                  ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-              }
-            >
-              {t.search} <ArrowRight size={16} />
-            </button>
-          </div>
-          <div className="filters">
-            <span>{t.popular}</span>
-            <button onClick={() => setQuery('Mondhygiënist')}>Mondhygiënist</button>
-            <button onClick={() => setQuery('Tandartsassistent')}>Tandartsassistent</button>
-            <button onClick={() => setQuery('Waarneming')}>Waarneming</button>
-            <button onClick={() => setQuery('')}>
-              Alle kansen <X size={12} />
-            </button>
-          </div>
-        </div>
-        <div className="listing-heading" id="results">
-          <div>
-            <span className="eyebrow">{t.new}</span>
-            <h3>{t.fitting}</h3>
-          </div>
-          <button className="filter-button">
-            <span>Alle functies</span>
-            <ChevronDown size={15} />
-          </button>
-        </div>
-        <div className="opportunity-grid">
-          {visible.length ? (
-            visible.map((item, index) => (
-              <article className="opportunity-card" key={item.clinic}>
-                <div className="card-top">
-                  <span className={`clinic-logo ${item.color}`}>{item.initials}</span>
+            <div className="marketplace">
+              <div className="market-top">
+                <div className="tabs">
                   <button
-                    className={`save ${saved.includes(index) ? 'saved' : ''}`}
-                    aria-label="Bewaar vacature"
-                    onClick={() =>
-                      setSaved(
-                        saved.includes(index)
-                          ? saved.filter((n) => n !== index)
-                          : [...saved, index],
-                      )
-                    }
+                    className={mode === 'werk' ? 'active' : ''}
+                    onClick={() => setMode('werk')}
                   >
-                    <Heart size={18} fill={saved.includes(index) ? 'currentColor' : 'none'} />
+                    <BriefcaseBusiness size={16} /> Ik zoek werk
+                  </button>
+                  <button
+                    className={mode === 'personeel' ? 'active' : ''}
+                    onClick={() => setMode('personeel')}
+                  >
+                    <UsersRound size={16} /> Ik zoek personeel
                   </button>
                 </div>
-                <span className={`job-type ${item.type === 'Waarneming' ? 'temp' : ''}`}>
-                  {item.type}
+                <span className="market-note">
+                  <span className="green-dot" />{' '}
+                  {mode === 'werk' ? '38 actuele kansen' : '124 professionals beschikbaar'}
                 </span>
-                <h4>{item.role}</h4>
-                <p className="clinic-name">{item.clinic}</p>
-                <div className="job-meta">
-                  <span>
-                    <MapPin size={14} />
-                    {item.area}
-                  </span>
-                  <span>
-                    <CalendarDays size={14} />
-                    {item.time}
-                  </span>
+              </div>
+              <div className="search-bar">
+                <label className="search-field">
+                  <Search size={19} />
+                  <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder={
+                      mode === 'werk'
+                        ? 'Functie, praktijk of trefwoord'
+                        : 'Zoek op functie of specialisme'
+                    }
+                  />
+                </label>
+                <span className="search-divider" />
+                <label className="location-field">
+                  <MapPin size={18} />
+                  <input
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    aria-label="Locatie"
+                  />
+                  <ChevronDown size={16} />
+                </label>
+                <button
+                  className="button button-dark search-button"
+                  onClick={() =>
+                    document
+                      .getElementById('results')
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                  }
+                >
+                  {t.search} <ArrowRight size={16} />
+                </button>
+              </div>
+              <div className="filters">
+                <span>{t.popular}</span>
+                <button onClick={() => setQuery('Mondhygiënist')}>Mondhygiënist</button>
+                <button onClick={() => setQuery('Tandartsassistent')}>Tandartsassistent</button>
+                <button onClick={() => setQuery('Waarneming')}>Waarneming</button>
+                <button onClick={() => setQuery('')}>
+                  Alle kansen <X size={12} />
+                </button>
+              </div>
+            </div>
+            <div className="listing-heading" id="results">
+              <div>
+                <span className="eyebrow">{t.new}</span>
+                <h3>{t.fitting}</h3>
+              </div>
+              <button className="filter-button">
+                <span>Alle functies</span>
+                <ChevronDown size={15} />
+              </button>
+            </div>
+            <div className="opportunity-grid">
+              {visible.length ? (
+                visible.map((item, index) => (
+                  <article className="opportunity-card" key={item.clinic}>
+                    <div className="card-top">
+                      <span className={`clinic-logo ${item.color}`}>{item.initials}</span>
+                      <button
+                        className={`save ${saved.includes(index) ? 'saved' : ''}`}
+                        aria-label="Bewaar vacature"
+                        onClick={() =>
+                          setSaved(
+                            saved.includes(index)
+                              ? saved.filter((n) => n !== index)
+                              : [...saved, index],
+                          )
+                        }
+                      >
+                        <Heart size={18} fill={saved.includes(index) ? 'currentColor' : 'none'} />
+                      </button>
+                    </div>
+                    <span className={`job-type ${item.type === 'Waarneming' ? 'temp' : ''}`}>
+                      {item.type}
+                    </span>
+                    <h4>{item.role}</h4>
+                    <p className="clinic-name">{item.clinic}</p>
+                    <div className="job-meta">
+                      <span>
+                        <MapPin size={14} />
+                        {item.area}
+                      </span>
+                      <span>
+                        <CalendarDays size={14} />
+                        {item.time}
+                      </span>
+                    </div>
+                    <div className="card-bottom">
+                      <b>{item.rate}</b>
+                      <a
+                        href="/sign-up"
+                        onClick={navigateToSignup}
+                        aria-label={`Bekijk ${item.role}`}
+                      >
+                        <ArrowUpRight size={17} />
+                      </a>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div className="empty-state">
+                  Geen kansen gevonden. Probeer een andere zoekterm.
                 </div>
-                <div className="card-bottom">
-                  <b>{item.rate}</b>
-                  <a href="/sign-up" onClick={navigateToSignup} aria-label={`Bekijk ${item.role}`}>
-                    <ArrowUpRight size={17} />
-                  </a>
-                </div>
-              </article>
-            ))
-          ) : (
-            <div className="empty-state">Geen kansen gevonden. Probeer een andere zoekterm.</div>
-          )}
-        </div>
-        <div className="trust-strip">
-          <div>
-            <ShieldCheck />
-            <span>
-              <b>Veilig & betrouwbaar</b>
-              <small>Geverifieerde praktijken</small>
-            </span>
-          </div>
-          <div>
-            <BadgeCheck />
-            <span>
-              <b>Jij houdt de regie</b>
-              <small>Transparant van begin tot eind</small>
-            </span>
-          </div>
-          <div>
-            <Clock3 />
-            <span>
-              <b>Snel geregeld</b>
-              <small>In een paar minuten aangemeld</small>
-            </span>
-          </div>
-        </div>
-      </section>
+              )}
+            </div>
+            <div className="trust-strip">
+              <div>
+                <ShieldCheck />
+                <span>
+                  <b>Veilig & betrouwbaar</b>
+                  <small>Geverifieerde praktijken</small>
+                </span>
+              </div>
+              <div>
+                <BadgeCheck />
+                <span>
+                  <b>Jij houdt de regie</b>
+                  <small>Transparant van begin tot eind</small>
+                </span>
+              </div>
+              <div>
+                <Clock3 />
+                <span>
+                  <b>Snel geregeld</b>
+                  <small>In een paar minuten aangemeld</small>
+                </span>
+              </div>
+            </div>
+          </section>
+        </>
+      )}
 
       <footer className="container footer">
-        <a className="brand" href="#top">
+        <a className="brand" href="/" onClick={navigateToPage}>
           <span className="brand-mark">
             <span />
           </span>
