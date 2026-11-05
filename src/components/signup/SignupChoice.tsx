@@ -28,7 +28,10 @@ function SignupChoice({ copy, onChoose }: SignupChoiceProps) {
             <strong>{copy.workTitle}</strong>
             <small>{copy.workDescription}</small>
           </span>
-          <span className="signup-choice-action">{copy.workAction}<ArrowRight size={16} /></span>
+          <span className="signup-choice-action">
+            {copy.workAction}
+            <ArrowRight size={16} />
+          </span>
         </button>
         <button className="signup-choice-card" type="button" onClick={() => onChoose('practice')}>
           <span className="signup-choice-icon">
@@ -38,7 +41,10 @@ function SignupChoice({ copy, onChoose }: SignupChoiceProps) {
             <strong>{copy.practiceTitle}</strong>
             <small>{copy.practiceDescription}</small>
           </span>
-          <span className="signup-choice-action">{copy.practiceAction}<ArrowRight size={16} /></span>
+          <span className="signup-choice-action">
+            {copy.practiceAction}
+            <ArrowRight size={16} />
+          </span>
         </button>
       </div>
     </div>

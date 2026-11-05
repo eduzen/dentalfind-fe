@@ -155,7 +155,9 @@
   min-width: 0;
 }
 .signup-choice-copy strong {
-  font: 700 17px/1.3 Manrope, sans-serif;
+  font:
+    700 17px/1.3 Manrope,
+    sans-serif;
   color: #25443a;
 }
 .signup-choice-copy small {
@@ -176,7 +178,9 @@
   color: #2f6a52;
   font-size: 11px;
   font-weight: 700;
-  transition: background 0.18s, color 0.18s;
+  transition:
+    background 0.18s,
+    color 0.18s;
 }
 .signup-choice-card:nth-child(2) .signup-choice-action {
   background: #f8eee4;

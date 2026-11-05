@@ -91,3 +91,23 @@ This project uses [Oxlint](https://oxc.rs/docs/guide/usage/linter) for fast lint
 - `bun run lint:fix` applies available lint fixes.
 - `bun run format` formats the project.
 - `bun run format:check` verifies formatting without changing files.
+
+### Git hooks with prek
+
+Install [prek](https://prek.j178.dev/) once, then activate the hooks in each clone:
+
+```sh
+bun install
+prek install
+prek run --all-files
+```
+
+The pre-commit hooks check formatting with Oxfmt and lint staged JavaScript and
+TypeScript files with Oxlint. They do not modify files automatically. If a check
+fails, run `bun run format` or `bun run lint:fix`, review and stage the changes,
+then commit again.
+
+Run `prek run --all-files` to check the whole repository manually. Dependencies
+must be installed locally; the hooks use the project's existing tools without
+downloading packages. GitHub Actions also runs lint, formatting checks, tests,
+and the production build, since local hooks can be skipped.
