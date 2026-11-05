@@ -56,6 +56,21 @@ const opportunities = [
 
 type Language = 'nl' | 'en' | 'es'
 type UserMode = 'werk' | 'personeel'
+
+const LANGUAGE_STORAGE_KEY = 'dentalfind-language'
+
+function getInitialLanguage(): Language {
+  try {
+    const storedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY)
+    if (storedLanguage === 'nl' || storedLanguage === 'en' || storedLanguage === 'es') {
+      return storedLanguage
+    }
+  } catch {
+    // Fall back to Dutch when browser storage is unavailable.
+  }
+
+  return 'nl'
+}
 type Translation = {
   jobs: string
   how: string
@@ -145,7 +160,7 @@ const copy: Record<Language, Translation> = {
 }
 
 function App(): ReactElement {
-  const [language, setLanguage] = useState<Language>('nl')
+  const [language, setLanguage] = useState<Language>(getInitialLanguage)
   const { pathname, navigate } = useBrowserPath()
   const t = copy[language]
   const [mode, setMode] = useState<UserMode>('werk')
@@ -156,6 +171,14 @@ function App(): ReactElement {
   const visible = opportunities.filter((item) =>
     `${item.role} ${item.clinic} ${item.area}`.toLowerCase().includes(query.toLowerCase()),
   )
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
+    } catch {
+      // Keep the selected language for this session if browser storage is unavailable.
+    }
+  }, [language])
 
   useEffect(() => {
     if (pathname === '/' && window.location.hash === '#aanmelden') {
@@ -212,11 +235,7 @@ function App(): ReactElement {
             <button className="login" onClick={() => navigate('/aanmelden')}>
               {t.login}
             </button>
-            <a
-              className="button button-dark nav-cta"
-              href="/aanmelden"
-              onClick={navigateToSignup}
-            >
+            <a className="button button-dark nav-cta" href="/aanmelden" onClick={navigateToSignup}>
               {t.join} <ArrowRight size={16} />
             </a>
             <button

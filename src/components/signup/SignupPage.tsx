@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type MouseEvent } from 'react'
+import { useEffect, useMemo, useState, type MouseEvent, type ReactElement } from 'react'
 import { CheckCircle2, ShieldCheck } from 'lucide-react'
 import {
   createMockSignup,
@@ -40,12 +40,17 @@ function getSignupRoute(pathname: string): SignupRoute {
   }
 }
 
-function rolePath(role: SignupRole, step: 'credentials' | 'profile') {
+function rolePath(role: SignupRole, step: 'credentials' | 'profile'): string {
   const roleSlug = role === 'professional' ? 'werk' : 'personeel'
   return `/aanmelden/${roleSlug}${step === 'profile' ? '/profiel' : ''}`
 }
 
-function SignupPage({ language, onLanguageChange, pathname, navigate }: SignupPageProps) {
+function SignupPage({
+  language,
+  onLanguageChange,
+  pathname,
+  navigate,
+}: SignupPageProps): ReactElement {
   const copy = signupCopy[language]
   const route = useMemo(() => getSignupRoute(pathname), [pathname])
   const [credentials, setCredentials] = useState<SignupCredentials | null>(null)
@@ -112,9 +117,54 @@ function SignupPage({ language, onLanguageChange, pathname, navigate }: SignupPa
     if (route?.role) navigate(rolePath(route.role, 'credentials'))
   }
 
-  const navigateHome = (event: MouseEvent<HTMLAnchorElement>) => {
+  function navigateHome(event: MouseEvent<HTMLAnchorElement>): void {
     event.preventDefault()
     navigate('/')
+  }
+
+  function renderSignupStep(): ReactElement | null {
+    if (step === 'choice') {
+      return <SignupChoice copy={copy} onChoose={chooseRole} />
+    }
+
+    if (step === 'credentials' && route?.role) {
+      return (
+        <AccountCredentialsForm
+          copy={copy}
+          initialValues={credentials ?? { email: '', password: '' }}
+          onBack={startOver}
+          onContinue={continueToProfile}
+        />
+      )
+    }
+
+    if (step !== 'profile' || !credentials) return null
+
+    if (route?.role === 'professional') {
+      return (
+        <ProfessionalSignupForm
+          copy={copy}
+          email={credentials.email}
+          isSubmitting={status === 'submitting'}
+          onBack={backToCredentials}
+          onSubmit={submitProfessionalProfile}
+        />
+      )
+    }
+
+    if (route?.role === 'practice') {
+      return (
+        <PracticeSignupForm
+          copy={copy}
+          email={credentials.email}
+          isSubmitting={status === 'submitting'}
+          onBack={backToCredentials}
+          onSubmit={submitPracticeProfile}
+        />
+      )
+    }
+
+    return null
   }
 
   return (
@@ -122,12 +172,24 @@ function SignupPage({ language, onLanguageChange, pathname, navigate }: SignupPa
       <header className="signup-nav">
         <div className="container signup-nav-inner">
           <a className="brand" href="/" onClick={navigateHome} aria-label="Dentalfind home">
-            <span className="brand-mark"><span /></span>dentalfind<span className="brand-dot">.</span>
+            <span className="brand-mark">
+              <span />
+            </span>
+            dentalfind<span className="brand-dot">.</span>
           </a>
           <div className="signup-nav-actions">
-            <a className="signup-page-home" href="/" onClick={navigateHome}>{copy.pageBack}</a>
-            <select className="language-select" aria-label="Language" value={language} onChange={(event) => onLanguageChange(event.target.value as SignupLanguage)}>
-              <option value="nl">NL</option><option value="en">EN</option><option value="es">ES</option>
+            <a className="signup-page-home" href="/" onClick={navigateHome}>
+              {copy.pageBack}
+            </a>
+            <select
+              className="language-select"
+              aria-label="Language"
+              value={language}
+              onChange={(event) => onLanguageChange(event.target.value as SignupLanguage)}
+            >
+              <option value="nl">NL</option>
+              <option value="en">EN</option>
+              <option value="es">ES</option>
             </select>
           </div>
         </div>
@@ -138,46 +200,34 @@ function SignupPage({ language, onLanguageChange, pathname, navigate }: SignupPa
             <span className="eyebrow">{copy.eyebrow}</span>
             <h1>{copy.heading}</h1>
             <p>{copy.intro}</p>
-            <div className="signup-reassurance"><ShieldCheck size={18} /><span>{copy.reassurance}</span></div>
+            <div className="signup-reassurance">
+              <ShieldCheck size={18} />
+              <span>{copy.reassurance}</span>
+            </div>
           </div>
           <div className="signup-panel">
             {status === 'success' ? (
               <div className="signup-success" role="status">
-                <span className="signup-success-icon"><CheckCircle2 size={28} /></span>
+                <span className="signup-success-icon">
+                  <CheckCircle2 size={28} />
+                </span>
                 <h3>{copy.successTitle}</h3>
-                <p>{copy.successIntro} <strong>{submittedEmail}</strong>.</p>
+                <p>
+                  {copy.successIntro} <strong>{submittedEmail}</strong>.
+                </p>
                 <p className="signup-mock-note">{copy.successNote}</p>
-                <button className="signup-back" type="button" onClick={startOver}>{copy.startOver}</button>
+                <button className="signup-back" type="button" onClick={startOver}>
+                  {copy.startOver}
+                </button>
               </div>
             ) : (
               <>
-                {status === 'error' && <p className="signup-error" role="alert">{copy.error}</p>}
-                {step === 'choice' ? (
-                  <SignupChoice copy={copy} onChoose={chooseRole} />
-                ) : step === 'credentials' && route?.role ? (
-                  <AccountCredentialsForm
-                    copy={copy}
-                    initialValues={credentials ?? { email: '', password: '' }}
-                    onBack={startOver}
-                    onContinue={continueToProfile}
-                  />
-                ) : step === 'profile' && route?.role === 'professional' && credentials ? (
-                  <ProfessionalSignupForm
-                    copy={copy}
-                    email={credentials.email}
-                    isSubmitting={status === 'submitting'}
-                    onBack={backToCredentials}
-                    onSubmit={submitProfessionalProfile}
-                  />
-                ) : step === 'profile' && route?.role === 'practice' && credentials ? (
-                  <PracticeSignupForm
-                    copy={copy}
-                    email={credentials.email}
-                    isSubmitting={status === 'submitting'}
-                    onBack={backToCredentials}
-                    onSubmit={submitPracticeProfile}
-                  />
-                ) : null}
+                {status === 'error' && (
+                  <p className="signup-error" role="alert">
+                    {copy.error}
+                  </p>
+                )}
+                {renderSignupStep()}
               </>
             )}
           </div>
