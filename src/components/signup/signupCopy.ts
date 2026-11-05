@@ -11,6 +11,9 @@ export type SignupCopy = {
   workDescription: string
   practiceTitle: string
   practiceDescription: string
+  workAction: string
+  practiceAction: string
+  pageBack: string
   backToChoice: string
   backToCredentials: string
   credentialsTitle: string
@@ -53,16 +56,19 @@ export type SignupCopy = {
 export const signupCopy: Record<SignupLanguage, SignupCopy> = {
   nl: {
     eyebrow: 'JOUW VOLGENDE STAP IN DE MONDZORG',
-    heading: 'Maak ruimte voor een nieuwe kans.',
+    heading: 'Aanmelden bij Dentalfind.',
     intro:
-      'Maak gratis een profiel aan. Kies eerst wat je zoekt; daarna tonen we alleen de gegevens die voor jou relevant zijn.',
+      'Meld je gratis aan. Kies eerst wat je zoekt, begin met je e-mailadres en wachtwoord en vul je profiel daarna aan.',
     reassurance: 'Gratis aanmelden, zonder verplichtingen.',
     chooseTitle: 'Waar ben je naar op zoek?',
     chooseHint: 'Kies de route die bij je past.',
     workTitle: 'Ik zoek werk',
-    workDescription: 'Maak een profiel als mondzorgprofessional.',
+    workDescription: 'Ik ben mondzorgprofessional en zoek passende vacatures.',
     practiceTitle: 'Ik zoek personeel',
-    practiceDescription: 'Maak een profiel voor jouw praktijk.',
+    practiceDescription: 'Ik vertegenwoordig een praktijk en zoek personeel.',
+    workAction: 'Verder als mondzorgprofessional',
+    practiceAction: 'Verder als praktijk',
+    pageBack: 'Terug naar Dentalfind',
     backToChoice: 'Andere route kiezen',
     backToCredentials: 'Terug naar je accountgegevens',
     credentialsTitle: 'Maak je account aan',
@@ -104,16 +110,19 @@ export const signupCopy: Record<SignupLanguage, SignupCopy> = {
   },
   en: {
     eyebrow: 'YOUR NEXT STEP IN DENTAL CARE',
-    heading: 'Make room for a new opportunity.',
+    heading: 'Join Dentalfind.',
     intro:
-      'Create a free profile. Choose what you are looking for first; we will only ask for details that are relevant to you.',
+      'Sign up for free. Choose what you are looking for, start with your email and password, and complete your profile next.',
     reassurance: 'Free to join, with no obligation.',
     chooseTitle: 'What are you looking for?',
     chooseHint: 'Choose the path that fits you.',
     workTitle: 'I’m looking for work',
-    workDescription: 'Create a profile as a dental professional.',
+    workDescription: 'I’m a dental professional looking for opportunities.',
     practiceTitle: 'I’m looking for staff',
-    practiceDescription: 'Create a profile for your practice.',
+    practiceDescription: 'I represent a practice looking for staff.',
+    workAction: 'Continue as a dental professional',
+    practiceAction: 'Continue as a practice',
+    pageBack: 'Back to Dentalfind',
     backToChoice: 'Choose a different path',
     backToCredentials: 'Back to account details',
     credentialsTitle: 'Create your account',
@@ -160,16 +169,19 @@ export const signupCopy: Record<SignupLanguage, SignupCopy> = {
   },
   es: {
     eyebrow: 'TU PRÓXIMO PASO EN SALUD DENTAL',
-    heading: 'Abre la puerta a nuevas oportunidades.',
+    heading: 'Únete a Dentalfind.',
     intro:
-      'Crea un perfil gratis. Elige primero lo que buscas y solo te pediremos los datos relevantes para ti.',
+      'Regístrate gratis. Elige lo que buscas, empieza con tu correo y contraseña y completa tu perfil después.',
     reassurance: 'Registro gratis y sin compromiso.',
     chooseTitle: '¿Qué estás buscando?',
     chooseHint: 'Elige la opción que mejor encaje contigo.',
     workTitle: 'Busco trabajo',
-    workDescription: 'Crea un perfil como profesional dental.',
+    workDescription: 'Soy profesional dental y busco oportunidades.',
     practiceTitle: 'Busco personal',
-    practiceDescription: 'Crea un perfil para tu clínica.',
+    practiceDescription: 'Represento una clínica que busca personal.',
+    workAction: 'Continuar como profesional dental',
+    practiceAction: 'Continuar como clínica',
+    pageBack: 'Volver a Dentalfind',
     backToChoice: 'Elegir otra opción',
     backToCredentials: 'Volver a los datos de la cuenta',
     credentialsTitle: 'Crea tu cuenta',

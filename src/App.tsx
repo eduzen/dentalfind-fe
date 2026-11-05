@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactElement } from 'react'
+import { useEffect, useState, type MouseEvent, type ReactElement } from 'react'
 import {
   ArrowRight,
   ArrowUpRight,
@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import './App.css'
 import SignupPage from './components/signup/SignupPage'
+import { useBrowserPath } from './hooks/useBrowserPath'
 
 const opportunities = [
   {
@@ -89,8 +90,8 @@ const copy: Record<Language, Translation> = {
     headline2: 'Een gezonde',
     headline3: 'glimlach verder.',
     lead: 'Vind werk dat bij je past, of de professional die jouw praktijk compleet maakt. De mondzorg begint hier.',
-    work: 'Ik zoek werk',
-    staff: 'Ik zoek personeel',
+    work: 'Bekijk vacatures',
+    staff: 'Personeel zoeken',
     next: 'Jouw volgende stap',
     good: 'Goed werk voelt goed.',
     all: 'Bekijk alle kansen',
@@ -110,7 +111,7 @@ const copy: Record<Language, Translation> = {
     headline2: 'A brighter',
     headline3: 'smile starts here.',
     lead: 'Find work that fits you, or the professional who completes your practice. Your next step in dental care starts here.',
-    work: 'Find work',
+    work: 'Browse jobs',
     staff: 'Find staff',
     next: 'YOUR NEXT STEP',
     good: 'Good work feels good.',
@@ -131,8 +132,8 @@ const copy: Record<Language, Translation> = {
     headline2: 'Una sonrisa',
     headline3: 'empieza aquí.',
     lead: 'Encuentra un trabajo a tu medida o al profesional que completa tu clínica. Tu próximo paso en salud dental empieza aquí.',
-    work: 'Busco trabajo',
-    staff: 'Busco personal',
+    work: 'Ver ofertas',
+    staff: 'Buscar personal',
     next: 'TU PRÓXIMO PASO',
     good: 'Un buen trabajo sienta bien.',
     all: 'Ver oportunidades',
@@ -145,6 +146,7 @@ const copy: Record<Language, Translation> = {
 
 function App(): ReactElement {
   const [language, setLanguage] = useState<Language>('nl')
+  const { pathname, navigate } = useBrowserPath()
   const t = copy[language]
   const [mode, setMode] = useState<UserMode>('werk')
   const [query, setQuery] = useState('')
@@ -156,10 +158,30 @@ function App(): ReactElement {
   )
 
   useEffect(() => {
+    if (pathname === '/' && window.location.hash === '#aanmelden') {
+      navigate('/aanmelden', { replace: true })
+      return
+    }
     const targetId = window.location.hash.slice(1)
     if (targetId)
       window.requestAnimationFrame(() => document.getElementById(targetId)?.scrollIntoView())
-  }, [])
+  }, [navigate, pathname])
+
+  function navigateToSignup(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault()
+    navigate('/aanmelden')
+  }
+
+  if (pathname === '/aanmelden' || pathname.startsWith('/aanmelden/')) {
+    return (
+      <SignupPage
+        language={language}
+        onLanguageChange={setLanguage}
+        pathname={pathname}
+        navigate={navigate}
+      />
+    )
+  }
 
   return (
     <main>
@@ -187,15 +209,14 @@ function App(): ReactElement {
               <option value="en">EN</option>
               <option value="es">ES</option>
             </select>
-            <button
-              className="login"
-              onClick={() =>
-                document.getElementById('aanmelden')?.scrollIntoView({ behavior: 'smooth' })
-              }
-            >
+            <button className="login" onClick={() => navigate('/aanmelden')}>
               {t.login}
             </button>
-            <a className="button button-dark nav-cta" href="#aanmelden">
+            <a
+              className="button button-dark nav-cta"
+              href="/aanmelden"
+              onClick={navigateToSignup}
+            >
               {t.join} <ArrowRight size={16} />
             </a>
             <button
@@ -226,7 +247,7 @@ function App(): ReactElement {
             <a href="#kansen" className="button button-dark">
               {t.work} <ArrowRight size={17} />
             </a>
-            <a href="#aanmelden" className="button button-light">
+            <a href="/aanmelden" onClick={navigateToSignup} className="button button-light">
               {t.staff} <ArrowUpRight size={17} />
             </a>
           </div>
@@ -402,7 +423,11 @@ function App(): ReactElement {
                 </div>
                 <div className="card-bottom">
                   <b>{item.rate}</b>
-                  <a href="#aanmelden" aria-label={`Bekijk ${item.role}`}>
+                  <a
+                    href="/aanmelden"
+                    onClick={navigateToSignup}
+                    aria-label={`Bekijk ${item.role}`}
+                  >
                     <ArrowUpRight size={17} />
                   </a>
                 </div>
@@ -437,7 +462,6 @@ function App(): ReactElement {
         </div>
       </section>
 
-      <SignupPage language={language} />
       <footer className="container footer">
         <a className="brand" href="#top">
           <span className="brand-mark">

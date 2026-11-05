@@ -1,6 +1,42 @@
-.signup-section {
+.signup-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: #edf3ed;
-  padding: 72px 0;
+}
+.signup-nav {
+  height: 74px;
+  flex: none;
+  border-bottom: 1px solid #e3ebe3;
+  background: #fbfaf7;
+}
+.signup-nav-inner,
+.signup-nav-actions {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.signup-nav-inner {
+  justify-content: space-between;
+}
+.signup-nav-actions {
+  gap: 24px;
+}
+.signup-page-home {
+  color: #687a71;
+  font-size: 12px;
+  font-weight: 600;
+}
+.signup-page-home:hover {
+  color: #2e6b54;
+}
+.signup-section {
+  min-height: calc(100vh - 74px);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #edf3ed;
+  padding: 64px 0;
 }
 .signup-layout {
   display: grid;
@@ -11,7 +47,7 @@
 .signup-intro {
   max-width: 420px;
 }
-.signup-intro h2 {
+.signup-intro h1 {
   font:
     700 clamp(32px, 4vw, 45px)/1.12 Manrope,
     sans-serif;
@@ -69,36 +105,41 @@
 .signup-choice-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 .signup-choice-card {
+  min-height: 210px;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 104px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
   text-align: left;
-  border: 1px solid #e5eae4;
-  border-radius: 11px;
-  background: #fff;
-  padding: 16px 14px;
+  border: 1px solid #dce7dd;
+  border-radius: 13px;
+  background: linear-gradient(150deg, #fff, #fbfdfb);
+  padding: 20px;
   cursor: pointer;
+  box-shadow: 0 8px 22px #243d3008;
   transition:
     border-color 0.18s,
     background 0.18s,
+    box-shadow 0.18s,
     transform 0.18s;
 }
 .signup-choice-card:hover,
 .signup-choice-card:focus-visible {
-  border-color: #8ab29b;
-  background: #f8fbf8;
-  transform: translateY(-2px);
-  outline: none;
+  border-color: #73a58a;
+  background: #fff;
+  box-shadow: 0 13px 28px #243d3016;
+  transform: translateY(-3px);
+  outline: 3px solid #73a58a30;
+  outline-offset: 2px;
 }
 .signup-choice-icon {
-  width: 38px;
-  height: 38px;
+  width: 46px;
+  height: 46px;
   flex: none;
-  border-radius: 11px;
+  border-radius: 13px;
   background: #e9f2eb;
   color: #4e8067;
   display: grid;
@@ -110,26 +151,44 @@
 }
 .signup-choice-copy {
   display: grid;
-  gap: 5px;
+  gap: 6px;
   min-width: 0;
 }
 .signup-choice-copy strong {
-  font-size: 13px;
+  font: 700 17px/1.3 Manrope, sans-serif;
   color: #25443a;
 }
 .signup-choice-copy small {
-  font-size: 10px;
-  line-height: 1.5;
-  color: #829087;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #718078;
 }
-.signup-choice-arrow {
-  flex: none;
-  margin-left: auto;
-  color: #73917f;
-  transition: transform 0.18s;
+.signup-choice-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  white-space: normal;
+  margin-top: auto;
+  padding: 9px 11px;
+  border-radius: 7px;
+  background: #e8f1eb;
+  color: #2f6a52;
+  font-size: 11px;
+  font-weight: 700;
+  transition: background 0.18s, color 0.18s;
 }
-.signup-choice-card:hover .signup-choice-arrow {
-  transform: translateX(3px);
+.signup-choice-card:nth-child(2) .signup-choice-action {
+  background: #f8eee4;
+  color: #956746;
+}
+.signup-choice-card:hover .signup-choice-action {
+  background: #dcece1;
+  color: #245740;
+}
+.signup-choice-card:nth-child(2):hover .signup-choice-action {
+  background: #f2e2d2;
+  color: #805435;
 }
 .signup-form-view {
   min-width: 0;
@@ -294,7 +353,8 @@
 }
 @media (max-width: 800px) {
   .signup-section {
-    padding: 56px 0;
+    min-height: calc(100vh - 74px);
+    padding: 48px 0;
   }
   .signup-layout {
     grid-template-columns: 1fr;
@@ -304,7 +364,7 @@
   .signup-intro {
     max-width: 560px;
   }
-  .signup-intro h2 {
+  .signup-intro h1 {
     max-width: 480px;
   }
   .signup-panel {
@@ -312,13 +372,23 @@
   }
 }
 @media (max-width: 520px) {
+  .signup-nav-actions {
+    gap: 12px;
+  }
+  .signup-nav .brand {
+    font-size: 21px;
+  }
+  .signup-page-home {
+    font-size: 10px;
+  }
   .signup-section {
-    padding: 42px 0;
+    min-height: calc(100vh - 74px);
+    padding: 34px 0;
   }
   .signup-layout {
     gap: 21px;
   }
-  .signup-intro h2 {
+  .signup-intro h1 {
     font-size: 32px;
   }
   .signup-intro > p {
@@ -332,7 +402,7 @@
     grid-template-columns: 1fr;
   }
   .signup-choice-card {
-    min-height: 86px;
+    min-height: 170px;
   }
   .signup-fields-grid {
     grid-template-columns: 1fr;
