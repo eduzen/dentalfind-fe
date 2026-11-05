@@ -2,6 +2,7 @@ import { MapPin, Search } from 'lucide-react'
 import { useMemo, useState, type ReactElement } from 'react'
 import type { BrowserNavigate } from '../../hooks/useBrowserPath'
 import { useUserLocation } from '../../hooks/useUserLocation'
+import { useSavedOpportunities } from '../../hooks/useSavedOpportunities'
 import { distanceKm } from '../../services/location'
 import MapView from '../maps/MapView'
 import OpportunityCard from './OpportunityCard'
@@ -23,7 +24,7 @@ export default function OpportunitiesPage({
   const [query, setQuery] = useState('')
   const [location, setLocation] = useState('')
   const [type, setType] = useState('all')
-  const [saved, setSaved] = useState<string[]>([])
+  const { saved, toggleSaved } = useSavedOpportunities()
   const [savedOnly, setSavedOnly] = useState(false)
   const nearby = locationCopy[language]
   const userLocation = useUserLocation()
@@ -59,12 +60,6 @@ export default function OpportunitiesPage({
   function clearLocation(): void {
     userLocation.clear()
     setRadius('all')
-  }
-
-  function toggleSaved(id: string): void {
-    setSaved((current) =>
-      current.includes(id) ? current.filter((savedId) => savedId !== id) : [...current, id],
-    )
   }
 
   function resetFilters(): void {

@@ -1,6 +1,7 @@
 import { ArrowUpRight, CalendarDays, Heart, MapPin } from 'lucide-react'
 import type { ReactElement } from 'react'
 import type { BrowserNavigate } from '../../hooks/useBrowserPath'
+import AppLink from '../layout/AppLink'
 import { locationCopy } from './locationCopy'
 import { opportunityCopy, type Language, type Opportunity } from './opportunities'
 
@@ -11,6 +12,8 @@ type OpportunityCardProps = {
   distanceKm?: number
   onToggleSave: () => void
   navigate: BrowserNavigate
+  headingLevel?: 'h3' | 'h4'
+  signupPath?: '/sign-up' | '/sign-up/work'
 }
 
 export default function OpportunityCard({
@@ -20,8 +23,11 @@ export default function OpportunityCard({
   onToggleSave,
   navigate,
   distanceKm,
+  headingLevel: Heading = 'h3',
+  signupPath = '/sign-up/work',
 }: OpportunityCardProps): ReactElement {
   const t = opportunityCopy[language]
+  const roleLabel = t.roles[opportunity.role]
 
   return (
     <article className="opportunity-card">
@@ -30,7 +36,7 @@ export default function OpportunityCard({
         <button
           type="button"
           className={`save ${saved ? 'saved' : ''}`}
-          aria-label={`${saved ? t.unsave : t.save}: ${t.roles[opportunity.role]}, ${opportunity.clinic}`}
+          aria-label={`${saved ? t.unsave : t.save}: ${roleLabel}, ${opportunity.clinic}`}
           aria-pressed={saved}
           onClick={onToggleSave}
         >
@@ -40,7 +46,7 @@ export default function OpportunityCard({
       <span className={`job-type ${opportunity.type === 'temporary' ? 'temp' : ''}`}>
         {t[opportunity.type]}
       </span>
-      <h3>{t.roles[opportunity.role]}</h3>
+      <Heading>{roleLabel}</Heading>
       <p className="clinic-name">{opportunity.clinic}</p>
       <div className="job-meta">
         <span>
@@ -60,24 +66,13 @@ export default function OpportunityCard({
       )}
       <div className="card-bottom">
         <b>{opportunity.rate[language]}</b>
-        <a
-          href="/sign-up/work"
-          aria-label={`${t.view}: ${t.roles[opportunity.role]}, ${opportunity.clinic}`}
-          onClick={(event) => {
-            if (
-              event.button !== 0 ||
-              event.metaKey ||
-              event.ctrlKey ||
-              event.shiftKey ||
-              event.altKey
-            )
-              return
-            event.preventDefault()
-            navigate('/sign-up/work')
-          }}
+        <AppLink
+          href={signupPath}
+          navigate={navigate}
+          aria-label={`${t.view}: ${roleLabel}, ${opportunity.clinic}`}
         >
           <ArrowUpRight size={17} />
-        </a>
+        </AppLink>
       </div>
     </article>
   )
