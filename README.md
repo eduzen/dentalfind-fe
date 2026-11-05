@@ -64,6 +64,25 @@ commit credentials. Local `.env*`, `.dev.vars*`, and `.wrangler/` files are igno
 See the [Workers static assets documentation](https://developers.cloudflare.com/workers/static-assets/)
 and [SPA routing guide](https://developers.cloudflare.com/workers/static-assets/routing/single-page-application/).
 
+## Typed API and server state
+
+The frontend uses **Orval + TanStack Query** to generate typed API functions and
+hooks from the FastAPI OpenAPI contract. See [openapi/README.md](openapi/README.md)
+for schema setup, backend conventions, configuration, and usage.
+
+```sh
+cp .env.example .env.local
+# Add the backend's real schema at openapi/schema.yml first:
+bun run api:generate
+bun run build
+bun test
+```
+
+Generated code lives in `src/api/generated/`; handwritten request behavior and
+query defaults live in `src/api/client.ts` and `src/api/queryClient.ts`. The app
+already mounts a shared `QueryClientProvider`. Existing mock flows remain intact
+until the backend contract is available.
+
 ## Code quality
 
 This project uses [Oxlint](https://oxc.rs/docs/guide/usage/linter) for fast linting and [Oxfmt](https://oxc.rs/docs/guide/usage/formatter) for formatting.

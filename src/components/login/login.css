@@ -1,0 +1,41 @@
+.login-layout {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 0.8fr);
+  max-width: 1000px;
+}
+.login-form .signup-fields-grid {
+  grid-template-columns: 1fr;
+}
+.login-form-links {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -5px;
+}
+.login-form-links a,
+.login-signup-prompt a {
+  color: #2e6b54;
+  font-size: 12px;
+  font-weight: 600;
+}
+.login-form-links a:hover,
+.login-signup-prompt a:hover {
+  color: #193c34;
+}
+.login-signup-prompt {
+  margin: 22px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid #edf0ec;
+  color: #78867f;
+  font-size: 12px;
+  text-align: center;
+}
+.login-error {
+  margin: -5px 0 0;
+  color: #a94442;
+  font-size: 12px;
+}
+@media (max-width: 760px) {
+  .login-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}

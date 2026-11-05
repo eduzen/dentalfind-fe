@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import './App.css'
 import SignupPage from './components/signup/SignupPage'
+import LoginPage from './components/login/LoginPage'
 import { useBrowserPath } from './hooks/useBrowserPath'
 
 const opportunities = [
@@ -57,7 +58,7 @@ const opportunities = [
 type Language = 'nl' | 'en' | 'es'
 type UserMode = 'werk' | 'personeel'
 
-const LANGUAGE_STORAGE_KEY = 'dentalfind-language'
+const LANGUAGE_STORAGE_KEY = 'dentalfind-language-v2'
 
 function getInitialLanguage(): Language {
   try {
@@ -66,10 +67,10 @@ function getInitialLanguage(): Language {
       return storedLanguage
     }
   } catch {
-    // Fall back to Dutch when browser storage is unavailable.
+    // Fall back to English when browser storage is unavailable.
   }
 
-  return 'nl'
+  return 'en'
 }
 type Translation = {
   jobs: string
@@ -181,8 +182,12 @@ function App(): ReactElement {
   }, [language])
 
   useEffect(() => {
+    if (pathname === '/inloggen') {
+      navigate('/login', { replace: true })
+      return
+    }
     if (pathname === '/' && window.location.hash === '#aanmelden') {
-      navigate('/aanmelden', { replace: true })
+      navigate('/sign-up', { replace: true })
       return
     }
     const targetId = window.location.hash.slice(1)
@@ -192,10 +197,19 @@ function App(): ReactElement {
 
   function navigateToSignup(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault()
-    navigate('/aanmelden')
+    navigate('/sign-up')
   }
 
-  if (pathname === '/aanmelden' || pathname.startsWith('/aanmelden/')) {
+  if (pathname === '/login' || pathname === '/inloggen') {
+    return <LoginPage language={language} onLanguageChange={setLanguage} navigate={navigate} />
+  }
+
+  if (
+    pathname === '/sign-up' ||
+    pathname.startsWith('/sign-up/') ||
+    pathname === '/aanmelden' ||
+    pathname.startsWith('/aanmelden/')
+  ) {
     return (
       <SignupPage
         language={language}
@@ -232,10 +246,10 @@ function App(): ReactElement {
               <option value="en">EN</option>
               <option value="es">ES</option>
             </select>
-            <button className="login" onClick={() => navigate('/aanmelden')}>
+            <button className="login" onClick={() => navigate('/login')}>
               {t.login}
             </button>
-            <a className="button button-dark nav-cta" href="/aanmelden" onClick={navigateToSignup}>
+            <a className="button button-dark nav-cta" href="/sign-up" onClick={navigateToSignup}>
               {t.join} <ArrowRight size={16} />
             </a>
             <button
@@ -266,7 +280,7 @@ function App(): ReactElement {
             <a href="#kansen" className="button button-dark">
               {t.work} <ArrowRight size={17} />
             </a>
-            <a href="/aanmelden" onClick={navigateToSignup} className="button button-light">
+            <a href="/sign-up" onClick={navigateToSignup} className="button button-light">
               {t.staff} <ArrowUpRight size={17} />
             </a>
           </div>
@@ -442,11 +456,7 @@ function App(): ReactElement {
                 </div>
                 <div className="card-bottom">
                   <b>{item.rate}</b>
-                  <a
-                    href="/aanmelden"
-                    onClick={navigateToSignup}
-                    aria-label={`Bekijk ${item.role}`}
-                  >
+                  <a href="/sign-up" onClick={navigateToSignup} aria-label={`Bekijk ${item.role}`}>
                     <ArrowUpRight size={17} />
                   </a>
                 </div>

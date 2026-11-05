@@ -29,20 +29,24 @@ type SignupRoute = { role: SignupRole | null; step: SignupStep } | null
 
 function getSignupRoute(pathname: string): SignupRoute {
   const normalizedPath = pathname.replace(/\/+$/, '') || '/'
-  if (normalizedPath === '/aanmelden') return { role: null, step: 'choice' }
+  if (normalizedPath === '/sign-up' || normalizedPath === '/aanmelden') {
+    return { role: null, step: 'choice' }
+  }
 
-  const match = normalizedPath.match(/^\/aanmelden\/(werk|personeel)(\/profiel)?$/)
+  const match = normalizedPath.match(
+    /^\/(?:sign-up|aanmelden)\/(work|practice|werk|personeel)(?:\/(profile|profiel))?$/,
+  )
   if (!match) return null
 
   return {
-    role: match[1] === 'werk' ? 'professional' : 'practice',
+    role: match[1] === 'work' || match[1] === 'werk' ? 'professional' : 'practice',
     step: match[2] ? 'profile' : 'credentials',
   }
 }
 
 function rolePath(role: SignupRole, step: 'credentials' | 'profile'): string {
-  const roleSlug = role === 'professional' ? 'werk' : 'personeel'
-  return `/aanmelden/${roleSlug}${step === 'profile' ? '/profiel' : ''}`
+  const roleSlug = role === 'professional' ? 'work' : 'practice'
+  return `/sign-up/${roleSlug}${step === 'profile' ? '/profile' : ''}`
 }
 
 function SignupPage({
@@ -60,13 +64,23 @@ function SignupPage({
 
   useEffect(() => {
     if (!route) {
-      navigate('/aanmelden', { replace: true })
+      navigate('/sign-up', { replace: true })
       return
     }
+
     if (route.step === 'profile' && !credentials && route.role) {
       navigate(rolePath(route.role, 'credentials'), { replace: true })
+      return
     }
-  }, [credentials, navigate, route])
+
+    let canonicalPath = '/sign-up'
+    if (route.role) {
+      const step = route.step === 'profile' ? 'profile' : 'credentials'
+      canonicalPath = rolePath(route.role, step)
+    }
+
+    if (pathname !== canonicalPath) navigate(canonicalPath, { replace: true })
+  }, [credentials, navigate, pathname, route])
 
   useEffect(() => {
     setStatus('idle')
@@ -110,7 +124,7 @@ function SignupPage({
     setCredentials(null)
     setStatus('idle')
     setSubmittedEmail('')
-    navigate('/aanmelden')
+    navigate('/sign-up')
   }
 
   function backToCredentials() {
