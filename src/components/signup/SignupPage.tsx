@@ -29,17 +29,15 @@ type SignupRoute = { role: SignupRole | null; step: SignupStep } | null
 
 function getSignupRoute(pathname: string): SignupRoute {
   const normalizedPath = pathname.replace(/\/+$/, '') || '/'
-  if (normalizedPath === '/sign-up' || normalizedPath === '/aanmelden') {
+  if (normalizedPath === '/sign-up') {
     return { role: null, step: 'choice' }
   }
 
-  const match = normalizedPath.match(
-    /^\/(?:sign-up|aanmelden)\/(work|practice|werk|personeel)(?:\/(profile|profiel))?$/,
-  )
+  const match = normalizedPath.match(/^\/sign-up\/(work|practice)(?:\/(profile))?$/)
   if (!match) return null
 
   return {
-    role: match[1] === 'work' || match[1] === 'werk' ? 'professional' : 'practice',
+    role: match[1] === 'work' ? 'professional' : 'practice',
     step: match[2] ? 'profile' : 'credentials',
   }
 }
@@ -185,7 +183,7 @@ function SignupPage({
     <main className="signup-page">
       <header className="signup-nav">
         <div className="container signup-nav-inner">
-          <a className="brand" href="/" onClick={navigateHome} aria-label="Dentalfind home">
+          <a className="brand" href="/" onClick={navigateHome} aria-label={copy.homeLabel}>
             <span className="brand-mark">
               <span />
             </span>
@@ -197,7 +195,7 @@ function SignupPage({
             </a>
             <select
               className="language-select"
-              aria-label="Language"
+              aria-label={copy.languageLabel}
               value={language}
               onChange={(event) => onLanguageChange(event.target.value as SignupLanguage)}
             >

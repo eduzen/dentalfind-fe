@@ -86,16 +86,53 @@ until the backend contract is available.
 ## Public pages
 
 - `/opportunities` shows demo opportunities with keyword, location and employment
-  filters, in-page saved cards, and an empty-state reset. Saved cards reset when
-  leaving or reloading the page.
+  filters, in-page saved cards, and an empty-state reset. Search and cards show
+  role names, employment types, schedules and rates in the selected locale.
 - `/how-it-works` explains the professional and practice journeys with separate
   steps and signup links.
 
-Both pages share the existing navigation and support English, Dutch and Spanish.
-Reusable UI lives in `src/components/opportunities/OpportunityCard.tsx` and
+The homepage, `/opportunities`, `/how-it-works`, `/login` and `/sign-up` share the
+existing navigation and support English, Dutch and Spanish. The canonical auth
+paths are `/login` and `/sign-up` (with `/sign-up/work` and `/sign-up/practice`
+for role-specific signup); Dutch URL aliases are not supported. Reusable UI lives
+in `src/components/opportunities/OpportunityCard.tsx` and
 `src/components/how-it-works/HowItWorksSteps.tsx`. Demo data and translated page
 copy live alongside the components. Listings are not connected to a live API;
 joining currently opens the existing mock signup flow.
+
+## Nearby search and maps
+
+On `/opportunities`, **Use my location** requests browser permission only after a
+click (HTTPS or localhost required). Coordinates stay in component memory and can
+be forgotten; they are not sent to the signup API or stored in local storage.
+Results sort by straight-line distance and can be limited to 5/10/25/50 km. The
+city/area text filter works without permission; it is not a geocoding service.
+All practice coordinates are approximate demo points, not verified addresses.
+
+The optional map uses Leaflet and OpenStreetMap raster tiles, loaded only when
+**Show map** is clicked. The tile service receives the visitor's IP and visible
+map area, but we do not send it their exact coordinates or draw their location.
+The cards remain usable without map tiles or location permission.
+
+Provider boundaries:
+
+- `src/services/location.ts`: provider-independent coordinates and distance math.
+- `src/hooks/useUserLocation.ts`: browser location permission and request lifecycle.
+- `src/components/maps/MapView.tsx`: public map interface (`MapMarker`/`MapViewProps`)
+  and lazy provider selection. It accepts arbitrary labelled points, so personnel
+  listings can reuse it when that data is available.
+- `src/components/maps/OpenStreetMapProvider.tsx`: all Leaflet and tile-service
+  details. To use Google Maps or Apple MapKit, implement the same props in a new
+  provider and switch the lazy import in `MapView.tsx`; search and distance logic
+  need not change. Also update the map privacy copy for the selected service.
+
+Before scaling beyond demo traffic, review the
+[OpenStreetMap tile usage policy](https://operations.osmfoundation.org/policies/tiles/)
+and choose an appropriate hosted tile service. The public service has no SLA;
+do not add bulk downloading or offline prefetching.
+
+`bun test` covers localized role/employment-type search, provider-independent
+distance behavior, and demo-coordinate checks.
 
 ## Code quality
 

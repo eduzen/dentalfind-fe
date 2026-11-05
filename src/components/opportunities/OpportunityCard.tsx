@@ -1,6 +1,17 @@
 import { ArrowUpRight, CalendarDays, Heart, MapPin } from 'lucide-react'
+import type { ReactElement } from 'react'
 import type { BrowserNavigate } from '../../hooks/useBrowserPath'
+import { locationCopy } from './locationCopy'
 import { opportunityCopy, type Language, type Opportunity } from './opportunities'
+
+type OpportunityCardProps = {
+  opportunity: Opportunity
+  language: Language
+  saved: boolean
+  distanceKm?: number
+  onToggleSave: () => void
+  navigate: BrowserNavigate
+}
 
 export default function OpportunityCard({
   opportunity,
@@ -8,13 +19,8 @@ export default function OpportunityCard({
   saved,
   onToggleSave,
   navigate,
-}: {
-  opportunity: Opportunity
-  language: Language
-  saved: boolean
-  onToggleSave: () => void
-  navigate: BrowserNavigate
-}) {
+  distanceKm,
+}: OpportunityCardProps): ReactElement {
   const t = opportunityCopy[language]
 
   return (
@@ -24,7 +30,7 @@ export default function OpportunityCard({
         <button
           type="button"
           className={`save ${saved ? 'saved' : ''}`}
-          aria-label={`${saved ? t.unsave : t.save}: ${opportunity.role}, ${opportunity.clinic}`}
+          aria-label={`${saved ? t.unsave : t.save}: ${t.roles[opportunity.role]}, ${opportunity.clinic}`}
           aria-pressed={saved}
           onClick={onToggleSave}
         >
@@ -34,7 +40,7 @@ export default function OpportunityCard({
       <span className={`job-type ${opportunity.type === 'temporary' ? 'temp' : ''}`}>
         {t[opportunity.type]}
       </span>
-      <h3>{opportunity.role}</h3>
+      <h3>{t.roles[opportunity.role]}</h3>
       <p className="clinic-name">{opportunity.clinic}</p>
       <div className="job-meta">
         <span>
@@ -43,14 +49,20 @@ export default function OpportunityCard({
         </span>
         <span>
           <CalendarDays size={14} />
-          {opportunity.time}
+          {opportunity.time[language]}
         </span>
       </div>
+      {distanceKm !== undefined && (
+        <p className="distance-note">
+          {new Intl.NumberFormat(language, { maximumFractionDigits: 1 }).format(distanceKm)}{' '}
+          {locationCopy[language].distance}
+        </p>
+      )}
       <div className="card-bottom">
-        <b>{opportunity.rate}</b>
+        <b>{opportunity.rate[language]}</b>
         <a
           href="/sign-up/work"
-          aria-label={`${t.view}: ${opportunity.role}, ${opportunity.clinic}`}
+          aria-label={`${t.view}: ${t.roles[opportunity.role]}, ${opportunity.clinic}`}
           onClick={(event) => {
             if (
               event.button !== 0 ||

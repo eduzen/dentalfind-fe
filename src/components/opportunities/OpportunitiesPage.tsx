@@ -1,32 +1,78 @@
-import { useState } from 'react'
 import { MapPin, Search } from 'lucide-react'
+import { useMemo, useState, type ReactElement } from 'react'
 import type { BrowserNavigate } from '../../hooks/useBrowserPath'
+import { useUserLocation } from '../../hooks/useUserLocation'
+import { distanceKm } from '../../services/location'
+import MapView from '../maps/MapView'
 import OpportunityCard from './OpportunityCard'
+import { locationCopy } from './locationCopy'
 import { filterOpportunities, opportunities, opportunityCopy, type Language } from './opportunities'
 import '../public-pages.css'
+import '../maps/maps.css'
+
+type OpportunitiesPageProps = {
+  language: Language
+  navigate: BrowserNavigate
+}
 
 export default function OpportunitiesPage({
   language,
   navigate,
-}: {
-  language: Language
-  navigate: BrowserNavigate
-}) {
+}: OpportunitiesPageProps): ReactElement {
   const t = opportunityCopy[language]
   const [query, setQuery] = useState('')
   const [location, setLocation] = useState('')
   const [type, setType] = useState('all')
   const [saved, setSaved] = useState<string[]>([])
   const [savedOnly, setSavedOnly] = useState(false)
-  const visible = filterOpportunities(opportunities, query, location, type).filter(
-    (item) => !savedOnly || saved.includes(item.id),
+  const nearby = locationCopy[language]
+  const userLocation = useUserLocation()
+  const [radius, setRadius] = useState('all')
+  const [showMap, setShowMap] = useState(false)
+  const visible = useMemo(
+    () =>
+      filterOpportunities(opportunities, query, location, type, language)
+        .filter((item) => !savedOnly || saved.includes(item.id))
+        .map((item) => ({
+          ...item,
+          distance: userLocation.coordinates
+            ? distanceKm(userLocation.coordinates, item.coordinates)
+            : undefined,
+        }))
+        .filter(
+          (item) =>
+            item.distance === undefined || radius === 'all' || item.distance <= Number(radius),
+        )
+        .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0)),
+    [query, location, type, language, savedOnly, saved, userLocation.coordinates, radius],
+  )
+  const markers = useMemo(
+    () =>
+      visible.map((item) => ({
+        id: item.id,
+        position: item.coordinates,
+        label: `${item.clinic} — ${item.area}`,
+      })),
+    [visible],
   )
 
-  function resetFilters() {
+  function clearLocation(): void {
+    userLocation.clear()
+    setRadius('all')
+  }
+
+  function toggleSaved(id: string): void {
+    setSaved((current) =>
+      current.includes(id) ? current.filter((savedId) => savedId !== id) : [...current, id],
+    )
+  }
+
+  function resetFilters(): void {
     setQuery('')
     setLocation('')
     setType('all')
     setSavedOnly(false)
+    clearLocation()
   }
 
   return (
@@ -60,6 +106,38 @@ export default function OpportunitiesPage({
           </select>
         </label>
       </div>
+      <div className="nearby-controls">
+        <p>{nearby.privacy}</p>
+        <div className="nearby-actions">
+          <button
+            type="button"
+            className="button button-dark"
+            onClick={userLocation.request}
+            disabled={userLocation.status === 'loading'}
+          >
+            {userLocation.status === 'loading' ? nearby.loading : nearby.use}
+          </button>
+          {userLocation.coordinates && (
+            <>
+              <label>
+                {nearby.radius}{' '}
+                <select value={radius} onChange={(event) => setRadius(event.target.value)}>
+                  <option value="all">{nearby.any}</option>
+                  {[5, 10, 25, 50].map((km) => (
+                    <option key={km} value={km}>
+                      {km} km
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button type="button" className="text-link" onClick={clearLocation}>
+                {nearby.clear}
+              </button>
+            </>
+          )}
+        </div>
+        <p role="status">{nearby[userLocation.status]}</p>
+      </div>
       <div className="opportunity-results-bar">
         <p role="status">
           {visible.length} {t.results}
@@ -77,6 +155,23 @@ export default function OpportunitiesPage({
         </button>
       </div>
       <p className="demo-note">{t.demo}</p>
+      <div className="map-controls">
+        <button
+          type="button"
+          className="button button-dark"
+          aria-expanded={showMap}
+          aria-controls="opportunity-map"
+          onClick={() => setShowMap((current) => !current)}
+        >
+          {showMap ? nearby.hideMap : nearby.showMap}
+        </button>
+        <p className="demo-note">{nearby.mapPrivacy}</p>
+      </div>
+      {showMap && (
+        <div id="opportunity-map">
+          <MapView markers={markers} label={nearby.mapLabel} loadingLabel={nearby.mapLoading} />
+        </div>
+      )}
       <div className="opportunity-grid">
         {visible.map((item) => (
           <OpportunityCard
@@ -84,14 +179,9 @@ export default function OpportunitiesPage({
             opportunity={item}
             language={language}
             saved={saved.includes(item.id)}
+            distanceKm={item.distance}
             navigate={navigate}
-            onToggleSave={() =>
-              setSaved((current) =>
-                current.includes(item.id)
-                  ? current.filter((id) => id !== item.id)
-                  : [...current, item.id],
-              )
-            }
+            onToggleSave={() => toggleSaved(item.id)}
           />
         ))}
         {visible.length === 0 && (

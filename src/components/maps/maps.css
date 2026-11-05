@@ -1,0 +1,48 @@
+.nearby-controls {
+  margin-top: 20px;
+  padding: 20px 24px;
+  border: 1px solid #dce3dd;
+  border-radius: 18px;
+  background: #f1f6f0;
+}
+.nearby-controls p {
+  color: #52645b;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+.nearby-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+}
+.nearby-actions select {
+  padding: 10px;
+  border: 1px solid #dce3dd;
+  border-radius: 8px;
+  background: white;
+  font: inherit;
+}
+.nearby-actions .text-link {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.nearby-actions button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.opportunities-map {
+  height: 360px;
+  width: 100%;
+  border: 1px solid #dce3dd;
+  border-radius: 18px;
+  margin-bottom: 24px;
+  z-index: 0;
+}
+.distance-note {
+  margin: 12px 0;
+  color: #286b51;
+  font-size: 0.85rem;
+}

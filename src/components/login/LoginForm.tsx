@@ -55,7 +55,7 @@ function LoginForm({ language, isSubmitting, onSubmit }: LoginFormProps): ReactE
               name="email"
               type="email"
               autoComplete="email"
-              placeholder="jij@voorbeeld.nl"
+              placeholder={copy.emailPlaceholder}
               required
             />
           </label>

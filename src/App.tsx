@@ -23,42 +23,69 @@ import LoginPage from './components/login/LoginPage'
 import OpportunitiesPage from './components/opportunities/OpportunitiesPage'
 import HowItWorksPage from './components/how-it-works/HowItWorksPage'
 import { useBrowserPath } from './hooks/useBrowserPath'
+import {
+  filterOpportunities,
+  opportunityCopy,
+  type Language,
+  type Opportunity,
+} from './components/opportunities/opportunities'
 
-const opportunities = [
+const opportunities: Opportunity[] = [
   {
-    role: 'Mondhygiënist',
+    id: 'home-de-jordaan-hygienist',
+    role: 'dentalHygienist',
     clinic: 'Tandartspraktijk De Jordaan',
     area: 'Amsterdam-West',
-    type: 'Waarneming',
-    time: 'Morgen · 08:30 – 17:00',
-    rate: '€ 55 – 65 / uur',
+    coordinates: { latitude: 52.374, longitude: 4.881 },
+    type: 'temporary',
+    time: {
+      nl: 'Morgen · 08:30 – 17:00',
+      en: 'Tomorrow · 08:30 – 17:00',
+      es: 'Mañana · 08:30 – 17:00',
+    },
+    rate: { nl: '€ 55 – 65 / uur', en: '€ 55 – 65 / hour', es: '€ 55 – 65 / hora' },
     color: 'mint',
     initials: 'DJ',
   },
   {
-    role: 'Tandartsassistent',
+    id: 'home-studio-dental-assistant',
+    role: 'dentalAssistant',
     clinic: 'Studio Dental Noord',
     area: 'Amsterdam-Noord',
-    type: 'Vaste baan',
-    time: '32 – 40 uur per week',
-    rate: '€ 2.650 – 3.250 / mnd',
+    coordinates: { latitude: 52.401, longitude: 4.919 },
+    type: 'permanent',
+    time: {
+      nl: '32 – 40 uur per week',
+      en: '32 – 40 hours per week',
+      es: '32 – 40 horas por semana',
+    },
+    rate: {
+      nl: '€ 2.650 – 3.250 / mnd',
+      en: '€ 2,650 – 3,250 / month',
+      es: '€ 2.650 – 3.250 / mes',
+    },
     color: 'peach',
     initials: 'SD',
   },
   {
-    role: 'Tandarts',
+    id: 'home-kleine-wetering-dentist',
+    role: 'dentist',
     clinic: 'De Kleine Wetering',
     area: 'Amsterdam-Zuid',
-    type: 'Waarneming',
-    time: 'Vrijdag · 09:00 – 18:00',
-    rate: '€ 600 – 700 / dag',
+    coordinates: { latitude: 52.353, longitude: 4.89 },
+    type: 'temporary',
+    time: {
+      nl: 'Vrijdag · 09:00 – 18:00',
+      en: 'Friday · 09:00 – 18:00',
+      es: 'Viernes · 09:00 – 18:00',
+    },
+    rate: { nl: '€ 600 – 700 / dag', en: '€ 600 – 700 / day', es: '€ 600 – 700 / día' },
     color: 'lavender',
     initials: 'KW',
   },
 ]
 
-type Language = 'nl' | 'en' | 'es'
-type UserMode = 'werk' | 'personeel'
+type SearchMode = 'work' | 'staff'
 
 const LANGUAGE_STORAGE_KEY = 'dentalfind-language-v2'
 
@@ -94,6 +121,38 @@ type Translation = {
   popular: string
   new: string
   fitting: string
+  socialProofCount: string
+  socialProofCaption: string
+  imageAlt: string
+  photoTitle: string
+  photoCaption: string
+  opportunitiesTitle: string
+  opportunitiesCaption: string
+  matchTitle: string
+  matchCaption: string
+  workTab: string
+  staffTab: string
+  workAvailability: string
+  staffAvailability: string
+  roleSearchPlaceholder: string
+  staffSearchPlaceholder: string
+  locationLabel: string
+  allOpportunities: string
+  allRoles: string
+  saveOpportunity: string
+  removeSavedOpportunity: string
+  viewOpportunity: string
+  emptyState: string
+  trustSafeTitle: string
+  trustSafeDescription: string
+  trustControlTitle: string
+  trustControlDescription: string
+  trustQuickTitle: string
+  trustQuickDescription: string
+  footerTagline: string
+  homeLabel: string
+  languageLabel: string
+  menuLabel: string
 }
 
 const copy: Record<Language, Translation> = {
@@ -117,6 +176,38 @@ const copy: Record<Language, Translation> = {
     popular: 'Populair:',
     new: 'NIEUW OP DENTALFIND',
     fitting: 'Kansen die bij je passen',
+    socialProofCount: '1.200+ mondzorgprofessionals',
+    socialProofCaption: 'vinden hun plek via Dentalfind',
+    imageAlt: 'Tandarts en patiënt in een moderne praktijk',
+    photoTitle: 'Werk met een glimlach',
+    photoCaption: 'Jouw volgende stap begint hier',
+    opportunitiesTitle: 'Nieuwe kansen',
+    opportunitiesCaption: 'Elke dag vers aanbod',
+    matchTitle: 'Een match die klopt',
+    matchCaption: 'Voor jou én de praktijk',
+    workTab: 'Ik zoek werk',
+    staffTab: 'Ik zoek personeel',
+    workAvailability: '38 actuele kansen',
+    staffAvailability: '124 professionals beschikbaar',
+    roleSearchPlaceholder: 'Functie, praktijk of trefwoord',
+    staffSearchPlaceholder: 'Zoek op functie of specialisme',
+    locationLabel: 'Locatie',
+    allOpportunities: 'Alle kansen',
+    allRoles: 'Alle functies',
+    saveOpportunity: 'Bewaar vacature',
+    removeSavedOpportunity: 'Verwijder bewaarde vacature',
+    viewOpportunity: 'Bekijk deze kans',
+    emptyState: 'Geen kansen gevonden. Probeer een andere zoekterm.',
+    trustSafeTitle: 'Veilig & betrouwbaar',
+    trustSafeDescription: 'Geverifieerde praktijken',
+    trustControlTitle: 'Jij houdt de regie',
+    trustControlDescription: 'Transparant van begin tot eind',
+    trustQuickTitle: 'Snel geregeld',
+    trustQuickDescription: 'In een paar minuten aangemeld',
+    footerTagline: 'Een plek voor iedereen in de mondzorg.',
+    homeLabel: 'Dentalfind startpagina',
+    languageLabel: 'Taal',
+    menuLabel: 'Menu',
   },
   en: {
     jobs: 'Opportunities',
@@ -138,6 +229,38 @@ const copy: Record<Language, Translation> = {
     popular: 'Popular:',
     new: 'NEW ON DENTALFIND',
     fitting: 'Opportunities picked for you',
+    socialProofCount: '1,200+ dental professionals',
+    socialProofCaption: 'find their place through Dentalfind',
+    imageAlt: 'Dentist and patient in a modern practice',
+    photoTitle: 'Work with a smile',
+    photoCaption: 'Your next step starts here',
+    opportunitiesTitle: 'New opportunities',
+    opportunitiesCaption: 'Fresh opportunities every day',
+    matchTitle: 'A match that feels right',
+    matchCaption: 'For you and your practice',
+    workTab: 'I’m looking for work',
+    staffTab: 'I’m looking for staff',
+    workAvailability: '38 current opportunities',
+    staffAvailability: '124 professionals available',
+    roleSearchPlaceholder: 'Role, practice or keyword',
+    staffSearchPlaceholder: 'Search by role or specialty',
+    locationLabel: 'Location',
+    allOpportunities: 'All opportunities',
+    allRoles: 'All roles',
+    saveOpportunity: 'Save opportunity',
+    removeSavedOpportunity: 'Remove saved opportunity',
+    viewOpportunity: 'View this opportunity',
+    emptyState: 'No opportunities found. Try another search.',
+    trustSafeTitle: 'Safe and trusted',
+    trustSafeDescription: 'Verified practices',
+    trustControlTitle: 'You stay in control',
+    trustControlDescription: 'Clear from start to finish',
+    trustQuickTitle: 'Quick and easy',
+    trustQuickDescription: 'Sign up in just a few minutes',
+    footerTagline: 'A place for everyone in dental care.',
+    homeLabel: 'Dentalfind home',
+    languageLabel: 'Language',
+    menuLabel: 'Menu',
   },
   es: {
     jobs: 'Oportunidades',
@@ -159,6 +282,38 @@ const copy: Record<Language, Translation> = {
     popular: 'Popular:',
     new: 'NOVEDADES EN DENTALFIND',
     fitting: 'Oportunidades para ti',
+    socialProofCount: 'Más de 1.200 profesionales dentales',
+    socialProofCaption: 'encuentran su sitio en Dentalfind',
+    imageAlt: 'Dentista y paciente en una clínica moderna',
+    photoTitle: 'Trabaja con una sonrisa',
+    photoCaption: 'Tu próximo paso empieza aquí',
+    opportunitiesTitle: 'Nuevas oportunidades',
+    opportunitiesCaption: 'Ofertas nuevas cada día',
+    matchTitle: 'Una conexión ideal',
+    matchCaption: 'Para ti y tu clínica',
+    workTab: 'Busco trabajo',
+    staffTab: 'Busco personal',
+    workAvailability: '38 oportunidades activas',
+    staffAvailability: '124 profesionales disponibles',
+    roleSearchPlaceholder: 'Puesto, clínica o palabra clave',
+    staffSearchPlaceholder: 'Busca por puesto o especialidad',
+    locationLabel: 'Ubicación',
+    allOpportunities: 'Todas las oportunidades',
+    allRoles: 'Todos los puestos',
+    saveOpportunity: 'Guardar oferta',
+    removeSavedOpportunity: 'Eliminar oferta guardada',
+    viewOpportunity: 'Ver esta oportunidad',
+    emptyState: 'No hay oportunidades. Prueba otra búsqueda.',
+    trustSafeTitle: 'Seguro y confiable',
+    trustSafeDescription: 'Clínicas verificadas',
+    trustControlTitle: 'Tú tienes el control',
+    trustControlDescription: 'Claridad de principio a fin',
+    trustQuickTitle: 'Listo en un momento',
+    trustQuickDescription: 'Regístrate en solo unos minutos',
+    footerTagline: 'Un lugar para todos los profesionales de la salud dental.',
+    homeLabel: 'Inicio de Dentalfind',
+    languageLabel: 'Idioma',
+    menuLabel: 'Menú',
   },
 }
 
@@ -166,16 +321,16 @@ function App(): ReactElement {
   const [language, setLanguage] = useState<Language>(getInitialLanguage)
   const { pathname, navigate } = useBrowserPath()
   const t = copy[language]
-  const [mode, setMode] = useState<UserMode>('werk')
+  const opportunityText = opportunityCopy[language]
+  const [mode, setMode] = useState<SearchMode>('work')
   const [query, setQuery] = useState('')
   const [location, setLocation] = useState('Amsterdam')
   const [menuOpen, setMenuOpen] = useState(false)
   const [saved, setSaved] = useState<number[]>([])
-  const visible = opportunities.filter((item) =>
-    `${item.role} ${item.clinic} ${item.area}`.toLowerCase().includes(query.toLowerCase()),
-  )
+  const visible = filterOpportunities(opportunities, query, '', 'all', language)
 
   useEffect(() => {
+    document.documentElement.lang = language
     try {
       window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
     } catch {
@@ -184,18 +339,10 @@ function App(): ReactElement {
   }, [language])
 
   useEffect(() => {
-    if (pathname === '/inloggen') {
-      navigate('/login', { replace: true })
-      return
-    }
-    if (pathname === '/' && window.location.hash === '#aanmelden') {
-      navigate('/sign-up', { replace: true })
-      return
-    }
     const targetId = window.location.hash.slice(1)
     if (targetId)
       window.requestAnimationFrame(() => document.getElementById(targetId)?.scrollIntoView())
-  }, [navigate, pathname])
+  }, [pathname])
 
   function navigateToSignup(event: MouseEvent<HTMLAnchorElement>) {
     navigateToPage(event)
@@ -212,16 +359,11 @@ function App(): ReactElement {
   const isOpportunitiesPage = pathname === '/opportunities'
   const isHowItWorksPage = pathname === '/how-it-works'
 
-  if (pathname === '/login' || pathname === '/inloggen') {
+  if (pathname === '/login') {
     return <LoginPage language={language} onLanguageChange={setLanguage} navigate={navigate} />
   }
 
-  if (
-    pathname === '/sign-up' ||
-    pathname.startsWith('/sign-up/') ||
-    pathname === '/aanmelden' ||
-    pathname.startsWith('/aanmelden/')
-  ) {
+  if (pathname === '/sign-up' || pathname.startsWith('/sign-up/')) {
     return (
       <SignupPage
         language={language}
@@ -236,7 +378,7 @@ function App(): ReactElement {
     <main>
       <header className="nav-wrap">
         <nav className="nav container">
-          <a className="brand" href="/" onClick={navigateToPage} aria-label="Dentalfind home">
+          <a className="brand" href="/" onClick={navigateToPage} aria-label={t.homeLabel}>
             <span className="brand-mark">
               <span />
             </span>
@@ -264,7 +406,7 @@ function App(): ReactElement {
           <div className="nav-actions">
             <select
               className="language-select"
-              aria-label="Language"
+              aria-label={t.languageLabel}
               value={language}
               onChange={(event) => setLanguage(event.target.value as Language)}
             >
@@ -280,7 +422,7 @@ function App(): ReactElement {
             </a>
             <button
               className="menu-toggle"
-              aria-label="Menu"
+              aria-label={t.menuLabel}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen(!menuOpen)}
             >
@@ -325,8 +467,8 @@ function App(): ReactElement {
                   <span>+</span>
                 </div>
                 <div>
-                  <strong>1.200+ mondzorgprofessionals</strong>
-                  <small>vinden hun plek via Dentalfind</small>
+                  <strong>{t.socialProofCount}</strong>
+                  <small>{t.socialProofCaption}</small>
                 </div>
                 <div className="proof-stars">★★★★★</div>
               </div>
@@ -335,15 +477,15 @@ function App(): ReactElement {
               <div className="hero-photo">
                 <img
                   src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=1100&q=85"
-                  alt="Tandarts en patiënt in een moderne praktijk"
+                  alt={t.imageAlt}
                 />
                 <div className="photo-label">
                   <span className="label-icon">
                     <Sparkles size={15} />
                   </span>
                   <span>
-                    <b>Werk met een glimlach</b>
-                    <small>Jouw volgende stap begint hier</small>
+                    <b>{t.photoTitle}</b>
+                    <small>{t.photoCaption}</small>
                   </span>
                 </div>
               </div>
@@ -352,8 +494,8 @@ function App(): ReactElement {
                   <Check size={15} />
                 </span>
                 <span>
-                  <b>Nieuwe kansen</b>
-                  <small>Elke dag vers aanbod</small>
+                  <b>{t.opportunitiesTitle}</b>
+                  <small>{t.opportunitiesCaption}</small>
                 </span>
                 <ArrowUpRight size={17} />
               </div>
@@ -362,15 +504,15 @@ function App(): ReactElement {
                   <Heart size={16} fill="currentColor" />
                 </div>
                 <div>
-                  <b>Een match die klopt</b>
-                  <small>Voor jou én de praktijk</small>
+                  <b>{t.matchTitle}</b>
+                  <small>{t.matchCaption}</small>
                 </div>
               </div>
               <div className="hero-scribble">✳</div>
             </div>
           </section>
 
-          <section className="search-section container" id="kansen">
+          <section className="search-section container" id="opportunities">
             <div className="section-heading">
               <div>
                 <span className="eyebrow">{t.next}</span>
@@ -384,21 +526,21 @@ function App(): ReactElement {
               <div className="market-top">
                 <div className="tabs">
                   <button
-                    className={mode === 'werk' ? 'active' : ''}
-                    onClick={() => setMode('werk')}
+                    className={mode === 'work' ? 'active' : ''}
+                    onClick={() => setMode('work')}
                   >
-                    <BriefcaseBusiness size={16} /> Ik zoek werk
+                    <BriefcaseBusiness size={16} /> {t.workTab}
                   </button>
                   <button
-                    className={mode === 'personeel' ? 'active' : ''}
-                    onClick={() => setMode('personeel')}
+                    className={mode === 'staff' ? 'active' : ''}
+                    onClick={() => setMode('staff')}
                   >
-                    <UsersRound size={16} /> Ik zoek personeel
+                    <UsersRound size={16} /> {t.staffTab}
                   </button>
                 </div>
                 <span className="market-note">
                   <span className="green-dot" />{' '}
-                  {mode === 'werk' ? '38 actuele kansen' : '124 professionals beschikbaar'}
+                  {mode === 'work' ? t.workAvailability : t.staffAvailability}
                 </span>
               </div>
               <div className="search-bar">
@@ -408,9 +550,7 @@ function App(): ReactElement {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={
-                      mode === 'werk'
-                        ? 'Functie, praktijk of trefwoord'
-                        : 'Zoek op functie of specialisme'
+                      mode === 'work' ? t.roleSearchPlaceholder : t.staffSearchPlaceholder
                     }
                   />
                 </label>
@@ -420,7 +560,7 @@ function App(): ReactElement {
                   <input
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    aria-label="Locatie"
+                    aria-label={t.locationLabel}
                   />
                   <ChevronDown size={16} />
                 </label>
@@ -437,11 +577,17 @@ function App(): ReactElement {
               </div>
               <div className="filters">
                 <span>{t.popular}</span>
-                <button onClick={() => setQuery('Mondhygiënist')}>Mondhygiënist</button>
-                <button onClick={() => setQuery('Tandartsassistent')}>Tandartsassistent</button>
-                <button onClick={() => setQuery('Waarneming')}>Waarneming</button>
+                <button onClick={() => setQuery(opportunityText.roles.dentalHygienist)}>
+                  {opportunityText.roles.dentalHygienist}
+                </button>
+                <button onClick={() => setQuery(opportunityText.roles.dentalAssistant)}>
+                  {opportunityText.roles.dentalAssistant}
+                </button>
+                <button onClick={() => setQuery(opportunityText.temporary)}>
+                  {opportunityText.temporary}
+                </button>
                 <button onClick={() => setQuery('')}>
-                  Alle kansen <X size={12} />
+                  {t.allOpportunities} <X size={12} />
                 </button>
               </div>
             </div>
@@ -451,7 +597,7 @@ function App(): ReactElement {
                 <h3>{t.fitting}</h3>
               </div>
               <button className="filter-button">
-                <span>Alle functies</span>
+                <span>{t.allRoles}</span>
                 <ChevronDown size={15} />
               </button>
             </div>
@@ -463,7 +609,7 @@ function App(): ReactElement {
                       <span className={`clinic-logo ${item.color}`}>{item.initials}</span>
                       <button
                         className={`save ${saved.includes(index) ? 'saved' : ''}`}
-                        aria-label="Bewaar vacature"
+                        aria-label={`${saved.includes(index) ? t.removeSavedOpportunity : t.saveOpportunity}: ${opportunityText.roles[item.role]}, ${item.clinic}`}
                         onClick={() =>
                           setSaved(
                             saved.includes(index)
@@ -475,10 +621,10 @@ function App(): ReactElement {
                         <Heart size={18} fill={saved.includes(index) ? 'currentColor' : 'none'} />
                       </button>
                     </div>
-                    <span className={`job-type ${item.type === 'Waarneming' ? 'temp' : ''}`}>
-                      {item.type}
+                    <span className={`job-type ${item.type === 'temporary' ? 'temp' : ''}`}>
+                      {opportunityText[item.type]}
                     </span>
-                    <h4>{item.role}</h4>
+                    <h4>{opportunityText.roles[item.role]}</h4>
                     <p className="clinic-name">{item.clinic}</p>
                     <div className="job-meta">
                       <span>
@@ -487,15 +633,15 @@ function App(): ReactElement {
                       </span>
                       <span>
                         <CalendarDays size={14} />
-                        {item.time}
+                        {item.time[language]}
                       </span>
                     </div>
                     <div className="card-bottom">
-                      <b>{item.rate}</b>
+                      <b>{item.rate[language]}</b>
                       <a
                         href="/sign-up"
                         onClick={navigateToSignup}
-                        aria-label={`Bekijk ${item.role}`}
+                        aria-label={`${t.viewOpportunity}: ${opportunityText.roles[item.role]}, ${item.clinic}`}
                       >
                         <ArrowUpRight size={17} />
                       </a>
@@ -503,31 +649,29 @@ function App(): ReactElement {
                   </article>
                 ))
               ) : (
-                <div className="empty-state">
-                  Geen kansen gevonden. Probeer een andere zoekterm.
-                </div>
+                <div className="empty-state">{t.emptyState}</div>
               )}
             </div>
             <div className="trust-strip">
               <div>
                 <ShieldCheck />
                 <span>
-                  <b>Veilig & betrouwbaar</b>
-                  <small>Geverifieerde praktijken</small>
+                  <b>{t.trustSafeTitle}</b>
+                  <small>{t.trustSafeDescription}</small>
                 </span>
               </div>
               <div>
                 <BadgeCheck />
                 <span>
-                  <b>Jij houdt de regie</b>
-                  <small>Transparant van begin tot eind</small>
+                  <b>{t.trustControlTitle}</b>
+                  <small>{t.trustControlDescription}</small>
                 </span>
               </div>
               <div>
                 <Clock3 />
                 <span>
-                  <b>Snel geregeld</b>
-                  <small>In een paar minuten aangemeld</small>
+                  <b>{t.trustQuickTitle}</b>
+                  <small>{t.trustQuickDescription}</small>
                 </span>
               </div>
             </div>
@@ -536,13 +680,13 @@ function App(): ReactElement {
       )}
 
       <footer className="container footer">
-        <a className="brand" href="/" onClick={navigateToPage}>
+        <a className="brand" href="/" onClick={navigateToPage} aria-label={t.homeLabel}>
           <span className="brand-mark">
             <span />
           </span>
           dentalfind<span className="brand-dot">.</span>
         </a>
-        <span>Een plek voor iedereen in de mondzorg.</span>
+        <span>{t.footerTagline}</span>
         <span>© 2025 Dentalfind</span>
       </footer>
     </main>

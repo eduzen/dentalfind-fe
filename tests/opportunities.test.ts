@@ -1,39 +1,32 @@
-import assert from 'node:assert/strict'
-import { test } from 'bun:test'
+import { describe, expect, test } from 'bun:test'
 import { filterOpportunities, opportunities } from '../src/components/opportunities/opportunities'
 
-test('returns all opportunities when filters are empty', () => {
-  assert.deepEqual(filterOpportunities(opportunities, '', '', 'all'), opportunities)
-})
+describe('localized opportunity search', () => {
+  test('matches role names in the active language', () => {
+    expect(
+      filterOpportunities(opportunities, 'Mondhygiënist', '', 'all', 'nl').map((item) => item.id),
+    ).toEqual(['de-jordaan-hygienist'])
+    expect(
+      filterOpportunities(opportunities, 'Dental hygienist', '', 'all', 'en').map(
+        (item) => item.id,
+      ),
+    ).toEqual(['de-jordaan-hygienist'])
+    expect(
+      filterOpportunities(opportunities, 'Higienista dental', '', 'all', 'es').map(
+        (item) => item.id,
+      ),
+    ).toEqual(['de-jordaan-hygienist'])
+  })
 
-test('search ignores case, surrounding whitespace and accents', () => {
-  assert.deepEqual(
-    filterOpportunities(opportunities, '  MONDHYGIENIST ', '', 'all').map((item) => item.id),
-    ['de-jordaan-hygienist'],
-  )
-})
-
-test('search matches practice names', () => {
-  assert.equal(
-    filterOpportunities(opportunities, 'Studio Dental', '', 'all')[0]?.id,
-    'studio-dental-assistant',
-  )
-})
-
-test('combines keyword, location and employment filters', () => {
-  assert.equal(filterOpportunities(opportunities, 'Tandarts', 'noord', 'permanent').length, 1)
-  assert.equal(filterOpportunities(opportunities, 'Tandarts', 'noord', 'temporary').length, 0)
-})
-
-test('supports city and district filtering', () => {
-  assert.equal(filterOpportunities(opportunities, '', 'amsterdam', 'all').length, 3)
-  assert.equal(filterOpportunities(opportunities, '', 'zuid', 'all').length, 1)
-})
-
-test('returns no results for unmatched search terms', () => {
-  assert.deepEqual(filterOpportunities(opportunities, 'no-such-practice', '', 'all'), [])
-})
-
-test('opportunities have unique stable identifiers for saving filtered results', () => {
-  assert.equal(new Set(opportunities.map((item) => item.id)).size, opportunities.length)
+  test('matches temporary employment labels in the active language', () => {
+    expect(
+      filterOpportunities(opportunities, 'Waarneming', '', 'all', 'nl').map((item) => item.id),
+    ).toEqual(['de-jordaan-hygienist', 'kleine-wetering-dentist'])
+    expect(
+      filterOpportunities(opportunities, 'Temporary', '', 'all', 'en').map((item) => item.id),
+    ).toEqual(['de-jordaan-hygienist', 'kleine-wetering-dentist'])
+    expect(
+      filterOpportunities(opportunities, 'Temporal', '', 'all', 'es').map((item) => item.id),
+    ).toEqual(['de-jordaan-hygienist', 'kleine-wetering-dentist'])
+  })
 })

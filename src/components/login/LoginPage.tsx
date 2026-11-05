@@ -45,7 +45,7 @@ function LoginPage({ language, onLanguageChange, navigate }: LoginPageProps): Re
     <main className="signup-page">
       <header className="signup-nav">
         <div className="container signup-nav-inner">
-          <a className="brand" href="/" onClick={navigateHome} aria-label="Dentalfind home">
+          <a className="brand" href="/" onClick={navigateHome} aria-label={copy.homeLabel}>
             <span className="brand-mark">
               <span />
             </span>
@@ -57,7 +57,7 @@ function LoginPage({ language, onLanguageChange, navigate }: LoginPageProps): Re
             </a>
             <select
               className="language-select"
-              aria-label="Language"
+              aria-label={copy.languageLabel}
               value={language}
               onChange={(event) => onLanguageChange(event.target.value as SignupLanguage)}
             >

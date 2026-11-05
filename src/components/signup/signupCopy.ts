@@ -1,6 +1,8 @@
 export type SignupLanguage = 'nl' | 'en' | 'es'
 
 export type SignupCopy = {
+  homeLabel: string
+  languageLabel: string
   eyebrow: string
   heading: string
   intro: string
@@ -55,6 +57,8 @@ export type SignupCopy = {
 
 export const signupCopy: Record<SignupLanguage, SignupCopy> = {
   nl: {
+    homeLabel: 'Dentalfind startpagina',
+    languageLabel: 'Taal',
     eyebrow: 'JOUW VOLGENDE STAP IN DE MONDZORG',
     heading: 'Aanmelden bij Dentalfind.',
     intro:
@@ -109,6 +113,8 @@ export const signupCopy: Record<SignupLanguage, SignupCopy> = {
     error: 'Aanmelden lukte niet. Probeer het nog eens.',
   },
   en: {
+    homeLabel: 'Dentalfind home',
+    languageLabel: 'Language',
     eyebrow: 'YOUR NEXT STEP IN DENTAL CARE',
     heading: 'Join Dentalfind.',
     intro:
@@ -168,6 +174,8 @@ export const signupCopy: Record<SignupLanguage, SignupCopy> = {
     error: 'Signup failed. Please try again.',
   },
   es: {
+    homeLabel: 'Inicio de Dentalfind',
+    languageLabel: 'Idioma',
     eyebrow: 'TU PRÓXIMO PASO EN SALUD DENTAL',
     heading: 'Únete a Dentalfind.',
     intro:

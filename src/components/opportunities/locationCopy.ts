@@ -1,0 +1,66 @@
+export const locationCopy = {
+  en: {
+    use: 'Use my location',
+    clear: 'Forget my location',
+    radius: 'Within',
+    any: 'Any distance',
+    privacy:
+      'Optional: your location stays in memory for this page and is not saved to your profile. You can also search by city or area above.',
+    idle: '',
+    loading: 'Finding your location…',
+    ready: 'Sorted by distance from you.',
+    denied: 'Location permission was denied. You can still search by city or area.',
+    unavailable: 'Location is unavailable. Try again or search by city or area.',
+    timeout: 'Location request timed out. Try again or search by city or area.',
+    showMap: 'Show map',
+    hideMap: 'Hide map',
+    mapLabel: 'Map of matching demo practices',
+    mapLoading: 'Loading map…',
+    mapPrivacy:
+      'Opening the map loads third-party OpenStreetMap tiles, sharing your IP address and map area with that service. Practice pins are approximate demo locations. Your exact location is not shown on the map.',
+    distance: 'km away · straight-line estimate',
+  },
+  nl: {
+    use: 'Gebruik mijn locatie',
+    clear: 'Vergeet mijn locatie',
+    radius: 'Binnen',
+    any: 'Elke afstand',
+    privacy:
+      'Optioneel: je locatie blijft alleen in het geheugen van deze pagina en wordt niet opgeslagen in je profiel. Je kunt hierboven ook op stad of regio zoeken.',
+    idle: '',
+    loading: 'Je locatie wordt opgehaald…',
+    ready: 'Gesorteerd op afstand vanaf jouw locatie.',
+    denied: 'Locatietoegang geweigerd. Je kunt nog steeds op stad of regio zoeken.',
+    unavailable: 'Locatie niet beschikbaar. Probeer opnieuw of zoek op stad of regio.',
+    timeout: 'Het ophalen van je locatie duurde te lang. Probeer opnieuw of zoek op stad of regio.',
+    showMap: 'Toon kaart',
+    hideMap: 'Verberg kaart',
+    mapLabel: 'Kaart van passende demopraktijken',
+    mapLoading: 'Kaart laden…',
+    mapPrivacy:
+      'De kaart laadt externe OpenStreetMap-tegels en deelt je IP-adres en het kaartgebied met die dienst. Praktijkmarkeringen zijn geschatte demolocaties. Je exacte locatie wordt niet op de kaart getoond.',
+    distance: 'km afstand · hemelsbrede schatting',
+  },
+  es: {
+    use: 'Usar mi ubicación',
+    clear: 'Olvidar mi ubicación',
+    radius: 'Dentro de',
+    any: 'Cualquier distancia',
+    privacy:
+      'Opcional: tu ubicación solo se mantiene en la memoria de esta página y no se guarda en tu perfil. También puedes buscar por ciudad o zona arriba.',
+    idle: '',
+    loading: 'Buscando tu ubicación…',
+    ready: 'Ordenado por distancia desde tu ubicación.',
+    denied: 'Permiso de ubicación denegado. Puedes buscar por ciudad o zona.',
+    unavailable: 'Ubicación no disponible. Inténtalo de nuevo o busca por ciudad o zona.',
+    timeout:
+      'La solicitud de ubicación tardó demasiado. Inténtalo de nuevo o busca por ciudad o zona.',
+    showMap: 'Mostrar mapa',
+    hideMap: 'Ocultar mapa',
+    mapLabel: 'Mapa de clínicas de demostración coincidentes',
+    mapLoading: 'Cargando mapa…',
+    mapPrivacy:
+      'El mapa carga imágenes externas de OpenStreetMap y comparte tu dirección IP y la zona del mapa con ese servicio. Los marcadores son ubicaciones de demostración aproximadas. Tu ubicación exacta no se muestra en el mapa.',
+    distance: 'km de distancia · estimación en línea recta',
+  },
+}

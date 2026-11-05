@@ -17,10 +17,16 @@ type LoginCopy = {
   successTitle: string
   successMessage: string
   error: string
+  homeLabel: string
+  languageLabel: string
+  emailPlaceholder: string
 }
 
 export const loginCopy: Record<SignupLanguage, LoginCopy> = {
   nl: {
+    homeLabel: 'Dentalfind startpagina',
+    languageLabel: 'Taal',
+    emailPlaceholder: 'jij@voorbeeld.nl',
     eyebrow: 'FIJN DAT JE ER WEER BENT',
     heading: 'Welkom terug.',
     intro: 'Log in op je Dentalfind-account en ga verder met jouw volgende stap in de mondzorg.',
@@ -39,6 +45,9 @@ export const loginCopy: Record<SignupLanguage, LoginCopy> = {
     error: 'Vul een geldig e-mailadres en je wachtwoord in.',
   },
   en: {
+    homeLabel: 'Dentalfind home',
+    languageLabel: 'Language',
+    emailPlaceholder: 'you@example.com',
     eyebrow: 'GOOD TO HAVE YOU BACK',
     heading: 'Welcome back.',
     intro: 'Log in to your Dentalfind account and continue with your next step in dental care.',
@@ -57,6 +66,9 @@ export const loginCopy: Record<SignupLanguage, LoginCopy> = {
     error: 'Enter a valid email address and your password.',
   },
   es: {
+    homeLabel: 'Inicio de Dentalfind',
+    languageLabel: 'Idioma',
+    emailPlaceholder: 'tu@ejemplo.com',
     eyebrow: 'NOS ALEGRA VERTE DE NUEVO',
     heading: 'Te damos la bienvenida.',
     intro: 'Inicia sesión en tu cuenta de Dentalfind y continúa tu próximo paso en salud dental.',
