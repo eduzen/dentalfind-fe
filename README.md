@@ -30,3 +30,12 @@ If you are developing a production application, we recommend enabling type-aware
 ```
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+## Code quality
+
+This project uses [Oxlint](https://oxc.rs/docs/guide/usage/linter) for fast linting and [Oxfmt](https://oxc.rs/docs/guide/usage/formatter) for formatting.
+
+- `bun run lint` checks for lint issues.
+- `bun run lint:fix` applies available lint fixes.
+- `bun run format` formats the project.
+- `bun run format:check` verifies formatting without changing files.
